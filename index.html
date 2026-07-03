@@ -475,7 +475,8 @@
     }
   };
 
-  // 30 perguntas = 15 pares de traços × 2. [texto, opçãoA, traçosA, opçãoB, traçosB]
+  // 40 perguntas: 15 pares de traços × 2 + 10 extras; a % de cada traço é normalizada
+  // pelo próprio teto (max[t]), então os traços seguem comparáveis entre si.
   var QUESTIONS = [
     // ---- Página 1 ----
     { text: 'Diante de um projeto novo, você é mais de…',
@@ -552,8 +553,8 @@
       a: { label: 'Cria algo: escreve, desenha, monta, inventa', traits: ['criatividade'] },
       b: { label: 'Chama alguém: a tarde fica melhor em companhia', traits: ['sociabilidade'] } },
     { text: 'Quando alguém não entrega o combinado, você…',
-      a: { label: 'Entende: às vezes a vida aperta', traits: ['empatia'] },
-      b: { label: 'Cobra: dedicação se espera de todos', traits: ['disciplina'] } },
+      a: { label: 'Flexibiliza: às vezes a vida aperta', traits: ['empatia'] },
+      b: { label: 'Reforça o combinado: prazos importam', traits: ['disciplina'] } },
     { text: 'Entre o caminho e a chegada, o que pesa mais é…',
       a: { label: 'O resultado: é ele que conta no final', traits: ['ambicao'] },
       b: { label: 'O processo: criar já é a recompensa', traits: ['criatividade'] } },
@@ -567,11 +568,43 @@
       a: { label: 'A energia da festa', traits: ['sociabilidade'] },
       b: { label: 'O ombro das conversas difíceis', traits: ['empatia'] } },
     { text: 'Ao expressar uma opinião forte, você…',
-      a: { label: 'Adapta as palavras para não magoar', traits: ['empatia'] },
-      b: { label: 'Fala o que pensa, mesmo que choque', traits: ['criatividade'] } },
+      a: { label: 'Escolhe as palavras pensando em quem ouve', traits: ['empatia'] },
+      b: { label: 'É 100% autêntico(a), do seu jeito', traits: ['criatividade'] } },
     { text: 'Se precisar escolher, você abre mão de…',
-      a: { label: 'Tempo com pessoas, para alcançar metas', traits: ['ambicao'] },
-      b: { label: 'Metas, para estar com quem importa', traits: ['empatia'] } }
+      a: { label: 'Tempo livre, para investir nos seus objetivos', traits: ['ambicao'] },
+      b: { label: 'Alguns objetivos, para viver bons momentos com quem importa', traits: ['empatia'] } },
+
+    // ---- Página 4 ----
+    { text: 'Sua mesa (ou seu quarto) costuma estar…',
+      a: { label: 'Organizado: cada coisa no seu lugar', traits: ['disciplina'] },
+      b: { label: 'Um caos criativo que só você entende', traits: ['criatividade'] } },
+    { text: 'Num jogo ou competição, o que te motiva mais é…',
+      a: { label: 'Vencer e ficar em primeiro lugar', traits: ['ambicao'] },
+      b: { label: 'Jogar bem e evoluir a cada partida', traits: ['disciplina'] } },
+    { text: 'Antes de uma viagem, você…',
+      a: { label: 'Monta roteiro dia a dia, com horários', traits: ['disciplina'] },
+      b: { label: 'Pesquisa bem o destino e decide por lá', traits: ['racionalidade'] } },
+    { text: 'Se ganhasse um ano livre, você usaria para…',
+      a: { label: 'Criar um projeto seu, do zero', traits: ['criatividade'] },
+      b: { label: 'Acelerar sua carreira ou negócio', traits: ['ambicao'] } },
+    { text: 'Numa festa, você é quem…',
+      a: { label: 'Conversa com todo mundo e apresenta pessoas', traits: ['sociabilidade'] },
+      b: { label: 'Inventa a brincadeira ou o tema da noite', traits: ['criatividade'] } },
+    { text: 'Um bom presente para você dar é algo…',
+      a: { label: 'Feito por você, único no mundo', traits: ['criatividade'] },
+      b: { label: 'Que a pessoa comentou que precisava', traits: ['empatia'] } },
+    { text: 'Nas redes sociais, você prefere…',
+      a: { label: 'Mostrar suas conquistas e projetos', traits: ['ambicao'] },
+      b: { label: 'Interagir e acompanhar os amigos', traits: ['sociabilidade'] } },
+    { text: 'Ao aprender algo novo, funciona melhor para você…',
+      a: { label: 'Em grupo, trocando ideias', traits: ['sociabilidade'] },
+      b: { label: 'Sozinho(a), estudando a fundo', traits: ['racionalidade'] } },
+    { text: 'Um amigo te conta um problema. Sua primeira reação é…',
+      a: { label: 'Ajudar a entender a causa e resolver', traits: ['racionalidade'] },
+      b: { label: 'Ouvir com atenção e ficar do lado dele', traits: ['empatia'] } },
+    { text: 'Você se sente mais realizado(a) quando…',
+      a: { label: 'Ajuda alguém a superar algo difícil', traits: ['empatia'] },
+      b: { label: 'Bate uma meta que parecia impossível', traits: ['ambicao'] } }
   ];
 
   var PER_PAGE = 10;
@@ -652,7 +685,7 @@
       var sel = state.answers[i];
       html +=
         '<div class="q-card">' +
-          '<div class="q-num">Pergunta ' + (i + 1) + ' de 30</div>' +
+          '<div class="q-num">Pergunta ' + (i + 1) + ' de ' + QUESTIONS.length + '</div>' +
           '<div class="q-text">' + q.text + '</div>' +
           '<div class="options">' +
             '<button type="button" class="opt' + (sel === 'a' ? ' selected' : '') + '" data-q="' + i + '" data-c="a">' +
@@ -712,7 +745,7 @@
 
     var html =
       '<div class="progress">' +
-        '<div class="progress-label"><span>Teste concluído</span><span>30/30</span></div>' +
+        '<div class="progress-label"><span>Teste concluído</span><span>' + QUESTIONS.length + '/' + QUESTIONS.length + '</span></div>' +
         '<div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>' +
       '</div>' +
       '<div class="result">' +
