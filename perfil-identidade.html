@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil de Identidade · VITABLOOM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --sage: #A8B5A0;
+    --sage-dark: #5d6b56;
+    --sage-mid: #6e7d66;
+    --sage-soft: #7a8a72;
+    --cream: #F5F0E8;
+    --card-off: #fdfcf9;
+    --rose: #E8B4B8;
+    --rose-dark: #b06a70;
+    --text: #4a4a42;
+    --text-2: #6b6a60;
+    --text-3: #8a857a;
+    --divider: rgba(168,181,160,.25);
+  }
+
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes growBar {
+    from { width: 0; }
+  }
+
+  body {
+    font-family: 'Open Sans', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px) 60px;
+  }
+
+  /* ---------- Cabeçalho ---------- */
+  .brand {
+    text-align: center;
+    padding-top: clamp(18px, 4vw, 34px);
+  }
+  .brand .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+  }
+  .brand h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(34px, 7vw, 52px);
+    color: var(--sage-dark);
+    line-height: 1.15;
+  }
+  .brand .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(17px, 3vw, 21px);
+    color: var(--sage-soft);
+    margin-top: 6px;
+  }
+  .brand .deco {
+    width: 46px;
+    height: 2px;
+    background: var(--rose);
+    margin: 18px auto 0;
+  }
+
+  /* ---------- Progresso ---------- */
+  .progress {
+    margin: clamp(24px, 5vw, 36px) 0 clamp(20px, 4vw, 30px);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 9px;
+  }
+  .progress-track {
+    height: 8px;
+    background: rgba(168,181,160,.22);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sage), var(--rose));
+    border-radius: 20px;
+    transition: width .5s ease;
+  }
+
+  /* ---------- Página de perguntas ---------- */
+  .page { animation: floatUp .5s ease both; }
+
+  .q-card {
+    background: #fff;
+    border: 1px solid rgba(168,181,160,.3);
+    border-radius: 22px;
+    box-shadow: 0 14px 40px rgba(168,181,160,.12);
+    padding: clamp(20px, 4vw, 28px);
+    margin-bottom: 16px;
+  }
+  .q-num {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--rose-dark);
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(19px, 3.4vw, 23px);
+    color: var(--sage-dark);
+    margin-bottom: 16px;
+    line-height: 1.35;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .opt {
+    width: 100%;
+    text-align: left;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-2);
+    background: var(--card-off);
+    border: 1.5px solid rgba(168,181,160,.45);
+    border-radius: 14px;
+    padding: 14px 16px;
+    min-height: 48px;
+    cursor: pointer;
+    transition: all .22s ease;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .opt:hover { border-color: var(--sage); background: rgba(168,181,160,.08); }
+  .opt .dot {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sage);
+    background: #fff;
+    transition: all .22s ease;
+    position: relative;
+  }
+  .opt.selected {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 8px 22px rgba(168,181,160,.4);
+  }
+  .opt.selected .dot { background: #fff; border-color: #fff; }
+  .opt.selected .dot::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--sage-dark);
+  }
+  .ou {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-3);
+    line-height: 1;
+    margin: -2px 0;
+  }
+
+  /* ---------- Botão avançar ---------- */
+  .actions { margin-top: 26px; text-align: center; }
+  .btn {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+    background: var(--sage);
+    border: none;
+    border-radius: 34px;
+    padding: 16px 40px;
+    min-height: 48px;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(168,181,160,.4);
+    transition: all .25s ease;
+  }
+  .btn:hover:not(:disabled) { background: #97a690; transform: translateY(-2px); }
+  .btn:disabled {
+    background: rgba(168,181,160,.35);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .btn-rose { background: var(--rose); box-shadow: 0 12px 28px rgba(232,180,184,.45); }
+  .btn-rose:hover:not(:disabled) { background: #df9ea3; }
+  .btn-outline {
+    background: #fff;
+    color: var(--sage-mid);
+    border: 1.5px solid var(--sage);
+    box-shadow: none;
+  }
+  .btn-outline:hover { background: var(--sage); color: #fff; }
+  .hint {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 12px;
+  }
+
+  /* ---------- Resultado ---------- */
+  .result { animation: floatUp .6s ease both; }
+  .result-hero {
+    text-align: center;
+    background: #fff;
+    border: 2px solid var(--rose);
+    border-radius: 24px;
+    box-shadow: 0 14px 40px rgba(232,180,184,.2);
+    padding: clamp(30px, 6vw, 46px) clamp(22px, 5vw, 40px);
+    margin-bottom: 22px;
+  }
+  .result-hero .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 12px;
+  }
+  .result-hero h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(30px, 6.5vw, 44px);
+    color: var(--sage-dark);
+    line-height: 1.15;
+  }
+  .result-hero .desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-2);
+    max-width: 460px;
+    margin: 14px auto 0;
+  }
+
+  .career {
+    background: #fff;
+    border: 1px solid rgba(168,181,160,.3);
+    border-radius: 22px;
+    box-shadow: 0 14px 40px rgba(168,181,160,.12);
+    padding: clamp(22px, 4.5vw, 34px);
+    margin-bottom: 22px;
+    text-align: center;
+  }
+  .career .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 8px;
+  }
+  .career h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--sage-dark);
+    margin-bottom: 10px;
+  }
+  .career .career-intro {
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--text-2);
+    max-width: 480px;
+    margin: 0 auto 18px;
+  }
+  .career-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+  }
+  .career-pill {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sage-mid);
+    background: rgba(168,181,160,.16);
+    border: 1px solid rgba(168,181,160,.35);
+    padding: 8px 16px;
+    border-radius: 20px;
+  }
+  .career-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--rose-dark);
+    margin-top: 18px;
+  }
+
+  .traits {
+    background: var(--card-off);
+    border: 1px solid rgba(168,181,160,.3);
+    border-radius: 22px;
+    box-shadow: 0 14px 40px rgba(168,181,160,.12);
+    padding: clamp(22px, 4.5vw, 34px);
+  }
+  .traits h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--sage-dark);
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .trait-row { margin-bottom: 16px; }
+  .trait-row:last-child { margin-bottom: 0; }
+  .trait-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .trait-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+  }
+  .trait-pct {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--rose-dark);
+  }
+  .trait-track {
+    height: 12px;
+    background: rgba(168,181,160,.18);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .trait-bar {
+    height: 100%;
+    border-radius: 20px;
+    animation: growBar 1s ease both;
+  }
+  .trait-row.top .trait-bar { background: linear-gradient(90deg, var(--rose), var(--rose-dark)); }
+  .trait-row:not(.top) .trait-bar { background: linear-gradient(90deg, var(--sage), var(--sage-soft)); }
+  .top-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--rose);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-3);
+    margin-top: 44px;
+  }
+  footer em {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--sage-soft);
+  }
+
+  @media (min-width: 560px) {
+    .options { flex-direction: row; align-items: stretch; }
+    .opt { flex: 1; }
+    .ou { align-self: center; margin: 0 -2px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="brand">
+    <div class="eyebrow">Autoconhecimento</div>
+    <h1>Perfil de Identidade</h1>
+    <div class="tagline">Descubra os traços que florescem em você.</div>
+    <div class="deco"></div>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>© 2026 VITABLOOM · <em>Cultivar, transformar e florescer.</em></footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Traços: cada um aparece como opção em exatamente 10 das 30 perguntas,
+  // então a porcentagem é (pontos / 10) * 100.
+  var TRAITS = {
+    disciplina:    { label: 'Disciplina' },
+    criatividade:  { label: 'Criatividade' },
+    sociabilidade: { label: 'Sociabilidade' },
+    racionalidade: { label: 'Racionalidade' },
+    ambicao:       { label: 'Ambição' },
+    empatia:       { label: 'Empatia' }
+  };
+
+  var PROFILES = {
+    disciplina: {
+      title: 'O Estrategista',
+      desc: 'Você constrói a vida com constância e método. Onde outros veem caos, você enxerga um plano — e o segue até o fim. Sua força está na consistência silenciosa que transforma intenção em realidade.',
+      careerIntro: 'Você rende melhor em carreiras que valorizam organização, método e entrega consistente:',
+      careers: ['Gestão de Projetos', 'Administração', 'Engenharia', 'Finanças e Controladoria', 'Logística e Operações', 'Auditoria e Carreiras Públicas'],
+      combo: 'ambientes estruturados, com metas claras e processos bem definidos'
+    },
+    criatividade: {
+      title: 'O Visionário',
+      desc: 'Sua mente vive um passo à frente do óbvio. Você enxerga possibilidades onde ninguém olhou ainda e prefere inventar o caminho a repetir fórmulas. Sua força é a originalidade que renova tudo ao redor.',
+      careerIntro: 'Você floresce em carreiras que pedem originalidade e liberdade para criar:',
+      careers: ['Design e UX', 'Marketing e Publicidade', 'Arquitetura', 'Produção de Conteúdo e Audiovisual', 'Moda e Estética', 'Inovação e Produto'],
+      combo: 'espaços abertos a ideias novas, sem fórmulas engessadas'
+    },
+    sociabilidade: {
+      title: 'O Conector',
+      desc: 'Pessoas são a sua energia. Você cria pontes com facilidade, anima ambientes e faz os outros se sentirem parte de algo. Sua força está em transformar encontros em vínculos.',
+      careerIntro: 'Você brilha em carreiras movidas a gente, conversa e relacionamento:',
+      careers: ['Vendas e Negociação', 'Relações Públicas', 'Recursos Humanos', 'Eventos e Produção Cultural', 'Sucesso do Cliente', 'Turismo e Hotelaria'],
+      combo: 'times colaborativos e contato constante com pessoas'
+    },
+    racionalidade: {
+      title: 'O Analista',
+      desc: 'Você pensa antes de agir — e pensa bem. Fatos, lógica e clareza guiam suas escolhas, e é por isso que as pessoas confiam no seu julgamento. Sua força é a mente que separa o essencial do ruído.',
+      careerIntro: 'Você se destaca em carreiras que exigem lógica, análise e precisão:',
+      careers: ['Ciência de Dados', 'Tecnologia e Engenharia de Software', 'Direito', 'Pesquisa Científica', 'Economia', 'Medicina e Diagnóstico'],
+      combo: 'problemas complexos que pedem análise profunda'
+    },
+    ambicao: {
+      title: 'O Conquistador',
+      desc: 'Você não veio para ficar no mesmo lugar. Metas grandes não te assustam: te acendem. Sua força é a coragem de mirar alto e a determinação de chegar lá.',
+      careerIntro: 'Você cresce em carreiras de alto desempenho, onde ousadia é recompensada:',
+      careers: ['Empreendedorismo', 'Liderança Executiva', 'Mercado Financeiro', 'Consultoria Estratégica', 'Vendas de Alta Performance', 'Desenvolvimento de Negócios'],
+      combo: 'desafios grandes, autonomia e espaço para crescer rápido'
+    },
+    empatia: {
+      title: 'O Acolhedor',
+      desc: 'Você sente o mundo com profundidade e percebe o que os outros nem disseram. Cuidar, ouvir e acolher são a sua linguagem. Sua força é o coração que faz as pessoas se sentirem vistas.',
+      careerIntro: 'Você se realiza em carreiras dedicadas a cuidar e transformar vidas:',
+      careers: ['Psicologia e Terapias', 'Saúde e Enfermagem', 'Educação e Pedagogia', 'Serviço Social', 'Recursos Humanos', 'Bem-estar e Estética'],
+      combo: 'propósito humano e cuidado genuíno com as pessoas'
+    }
+  };
+
+  // 30 perguntas = 15 pares de traços × 2. [texto, opçãoA, traçosA, opçãoB, traçosB]
+  var QUESTIONS = [
+    // ---- Página 1 ----
+    { text: 'Diante de um projeto novo, você é mais de…',
+      a: { label: 'Planejar tudo com antecedência', traits: ['disciplina'] },
+      b: { label: 'Improvisar conforme as coisas acontecem', traits: ['criatividade'] } },
+    { text: 'Numa noite livre, você prefere…',
+      a: { label: 'Adiantar tarefas e organizar a semana', traits: ['disciplina'] },
+      b: { label: 'Sair para conversar com amigos', traits: ['sociabilidade'] } },
+    { text: 'Para tomar uma decisão importante, você…',
+      a: { label: 'Confia na intuição e no que sente', traits: ['criatividade'] },
+      b: { label: 'Analisa dados, prós e contras', traits: ['racionalidade'] } },
+    { text: 'Sucesso, para você, é mais…',
+      a: { label: 'Ter pessoas queridas por perto', traits: ['sociabilidade'] },
+      b: { label: 'Chegar aonde poucos chegam', traits: ['ambicao'] } },
+    { text: 'Num conflito entre amigos, você busca…',
+      a: { label: 'Entender quem tem razão', traits: ['racionalidade'] },
+      b: { label: 'Entender como cada um se sente', traits: ['empatia'] } },
+    { text: 'Quando pensa no futuro, você quer mais…',
+      a: { label: 'Deixar uma marca no mundo', traits: ['ambicao'] },
+      b: { label: 'Fazer diferença na vida de quem ama', traits: ['empatia'] } },
+    { text: 'Suas melhores ideias costumam nascer…',
+      a: { label: 'Sozinho(a), no silêncio', traits: ['criatividade'] },
+      b: { label: 'Trocando com outras pessoas', traits: ['sociabilidade'] } },
+    { text: 'Quando algo perde a graça no meio do caminho, você…',
+      a: { label: 'Termina mesmo assim: começou, acaba', traits: ['disciplina'] },
+      b: { label: 'Reavalia se ainda faz sentido continuar', traits: ['racionalidade'] } },
+    { text: 'No trabalho dos seus sonhos existe mais…',
+      a: { label: 'Clima leve e boas amizades', traits: ['sociabilidade'] },
+      b: { label: 'Desafios que fazem você crescer', traits: ['ambicao'] } },
+    { text: 'Sobre regras, você pensa que…',
+      a: { label: 'Existem para serem seguidas', traits: ['disciplina'] },
+      b: { label: 'Podem abrir exceções para pessoas', traits: ['empatia'] } },
+
+    // ---- Página 2 ----
+    { text: 'Você se realiza mais quando cria algo…',
+      a: { label: 'Original, mesmo que poucos vejam', traits: ['criatividade'] },
+      b: { label: 'Grande, reconhecido por todos', traits: ['ambicao'] } },
+    { text: 'Ao conhecer pessoas, você prefere…',
+      a: { label: 'Circular e conhecer muita gente nova', traits: ['sociabilidade'] },
+      b: { label: 'Se aprofundar em poucas conexões', traits: ['empatia'] } },
+    { text: 'Diante de uma oportunidade arriscada, você…',
+      a: { label: 'Só avança com os riscos calculados', traits: ['racionalidade'] },
+      b: { label: 'Avança primeiro e ajusta no caminho', traits: ['ambicao'] } },
+    { text: 'Você prefere crescer na vida com…',
+      a: { label: 'Progresso constante e seguro', traits: ['disciplina'] },
+      b: { label: 'Apostas grandes que aceleram tudo', traits: ['ambicao'] } },
+    { text: 'Quando alguém te pede um conselho, você…',
+      a: { label: 'Vai direto ao ponto, com soluções práticas', traits: ['racionalidade'] },
+      b: { label: 'Acolhe primeiro, aconselha depois', traits: ['empatia'] } },
+    { text: 'Ao fazer algo, você valoriza mais…',
+      a: { label: 'Métodos que já funcionam', traits: ['disciplina'] },
+      b: { label: 'Inventar o seu próprio jeito', traits: ['criatividade'] } },
+    { text: 'Num grupo novo, você costuma…',
+      a: { label: 'Puxar assunto com todo mundo', traits: ['sociabilidade'] },
+      b: { label: 'Observar antes de falar', traits: ['racionalidade'] } },
+    { text: 'Mergulhado(a) em algo que ama fazer, você…',
+      a: { label: 'Se perde no seu próprio mundo', traits: ['criatividade'] },
+      b: { label: 'Segue atento(a) ao que os outros sentem', traits: ['empatia'] } },
+    { text: 'Quando surge um convite de última hora, você…',
+      a: { label: 'Mantém sua rotina: compromisso é compromisso', traits: ['disciplina'] },
+      b: { label: 'Deixa a rotina de lado por um bom encontro', traits: ['sociabilidade'] } },
+    { text: 'Entre essas duas frases, você fica com…',
+      a: { label: '“Prefiro estar certo(a) a vencer”', traits: ['racionalidade'] },
+      b: { label: '“Prefiro vencer a estar certo(a)”', traits: ['ambicao'] } },
+
+    // ---- Página 3 ----
+    { text: 'Você admira mais quem tem…',
+      a: { label: 'Consistência no dia a dia', traits: ['disciplina'] },
+      b: { label: 'Conquistas que impressionam', traits: ['ambicao'] } },
+    { text: 'Uma ideia te conquista quando é…',
+      a: { label: 'Ousada, mesmo sem garantia de dar certo', traits: ['criatividade'] },
+      b: { label: 'Comprovada, mesmo que seja comum', traits: ['racionalidade'] } },
+    { text: 'Numa tarde inteira só sua, você…',
+      a: { label: 'Cria algo: escreve, desenha, monta, inventa', traits: ['criatividade'] },
+      b: { label: 'Chama alguém: a tarde fica melhor em companhia', traits: ['sociabilidade'] } },
+    { text: 'Quando alguém não entrega o combinado, você…',
+      a: { label: 'Cobra: dedicação se espera de todos', traits: ['disciplina'] },
+      b: { label: 'Entende: às vezes a vida aperta', traits: ['empatia'] } },
+    { text: 'Entre o caminho e a chegada, o que pesa mais é…',
+      a: { label: 'O processo: criar já é a recompensa', traits: ['criatividade'] },
+      b: { label: 'O resultado: é ele que conta no final', traits: ['ambicao'] } },
+    { text: 'Você decide melhor…',
+      a: { label: 'Conversando e ouvindo opiniões', traits: ['sociabilidade'] },
+      b: { label: 'Analisando sozinho(a), com calma', traits: ['racionalidade'] } },
+    { text: 'Com prazos apertados, você…',
+      a: { label: 'Entrega no prazo, custe o que custar', traits: ['disciplina'] },
+      b: { label: 'Prefere atrasar um pouco e decidir certo', traits: ['racionalidade'] } },
+    { text: 'Nas rodas de amigos, você é mais…',
+      a: { label: 'A energia da festa', traits: ['sociabilidade'] },
+      b: { label: 'O ombro das conversas difíceis', traits: ['empatia'] } },
+    { text: 'Ao expressar uma opinião forte, você…',
+      a: { label: 'Fala o que pensa, mesmo que choque', traits: ['criatividade'] },
+      b: { label: 'Adapta as palavras para não magoar', traits: ['empatia'] } },
+    { text: 'Se precisar escolher, você abre mão de…',
+      a: { label: 'Tempo com pessoas, para alcançar metas', traits: ['ambicao'] },
+      b: { label: 'Metas, para estar com quem importa', traits: ['empatia'] } }
+  ];
+
+  var PER_PAGE = 10;
+  var TOTAL_PAGES = QUESTIONS.length / PER_PAGE; // 3
+
+  // Estado em memória (sem localStorage)
+  var state = {
+    page: 0,                                    // 0..2 = perguntas, 3 = resultado
+    answers: new Array(QUESTIONS.length).fill(null) // 'a' | 'b' | null
+  };
+
+  var app = document.getElementById('app');
+
+  function pageAnswered(page) {
+    for (var i = page * PER_PAGE; i < (page + 1) * PER_PAGE; i++) {
+      if (state.answers[i] === null) return false;
+    }
+    return true;
+  }
+
+  function countAnswered(page) {
+    var n = 0;
+    for (var i = page * PER_PAGE; i < (page + 1) * PER_PAGE; i++) {
+      if (state.answers[i] !== null) n++;
+    }
+    return n;
+  }
+
+  function computeScores() {
+    var scores = {}, max = {};
+    Object.keys(TRAITS).forEach(function (t) { scores[t] = 0; max[t] = 0; });
+    QUESTIONS.forEach(function (q, i) {
+      q.a.traits.forEach(function (t) { max[t]++; });
+      q.b.traits.forEach(function (t) { max[t]++; });
+      var choice = state.answers[i];
+      if (choice) {
+        q[choice].traits.forEach(function (t) { scores[t]++; });
+      }
+    });
+    return Object.keys(TRAITS).map(function (t) {
+      return {
+        key: t,
+        label: TRAITS[t].label,
+        pct: max[t] ? Math.round((scores[t] / max[t]) * 100) : 0
+      };
+    }).sort(function (x, y) { return y.pct - x.pct; });
+  }
+
+  function render() {
+    if (state.page >= TOTAL_PAGES) {
+      renderResult();
+    } else {
+      renderPage();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderPage() {
+    var page = state.page;
+    var isLast = page === TOTAL_PAGES - 1;
+    var done = pageAnswered(page);
+    var answered = countAnswered(page);
+    var pctFill = ((page + 1) / TOTAL_PAGES) * 100;
+
+    var html =
+      '<div class="progress">' +
+        '<div class="progress-label">' +
+          '<span>Página ' + (page + 1) + ' de ' + TOTAL_PAGES + '</span>' +
+          '<span>' + answered + '/' + PER_PAGE + ' respondidas</span>' +
+        '</div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pctFill + '%"></div></div>' +
+      '</div>' +
+      '<div class="page" id="page-' + page + '">';
+
+    for (var i = page * PER_PAGE; i < (page + 1) * PER_PAGE; i++) {
+      var q = QUESTIONS[i];
+      var sel = state.answers[i];
+      html +=
+        '<div class="q-card">' +
+          '<div class="q-num">Pergunta ' + (i + 1) + ' de 30</div>' +
+          '<div class="q-text">' + q.text + '</div>' +
+          '<div class="options">' +
+            '<button type="button" class="opt' + (sel === 'a' ? ' selected' : '') + '" data-q="' + i + '" data-c="a">' +
+              '<span class="dot"></span><span>' + q.a.label + '</span></button>' +
+            '<div class="ou">ou</div>' +
+            '<button type="button" class="opt' + (sel === 'b' ? ' selected' : '') + '" data-q="' + i + '" data-c="b">' +
+              '<span class="dot"></span><span>' + q.b.label + '</span></button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    html +=
+        '<div class="actions">' +
+          '<button type="button" class="btn' + (isLast ? ' btn-rose' : '') + '" id="next"' + (done ? '' : ' disabled') + '>' +
+            (isLast ? 'Ver resultado ✿' : 'Próximo →') +
+          '</button>' +
+          (done ? '' : '<div class="hint">Responda as ' + PER_PAGE + ' perguntas para continuar</div>') +
+        '</div>' +
+      '</div>';
+
+    app.innerHTML = html;
+
+    app.querySelectorAll('.opt').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var qi = parseInt(btn.dataset.q, 10);
+        state.answers[qi] = btn.dataset.c;
+        updatePageUI(qi);
+      });
+    });
+    document.getElementById('next').addEventListener('click', function () {
+      if (pageAnswered(state.page)) {
+        state.page++;
+        render();
+      }
+    });
+  }
+
+  // Atualiza seleção, contador e botão sem redesenhar a página (evita "pulos" de scroll)
+  function updatePageUI(qi) {
+    app.querySelectorAll('.opt[data-q="' + qi + '"]').forEach(function (b) {
+      b.classList.toggle('selected', b.dataset.c === state.answers[qi]);
+    });
+    var page = state.page;
+    var done = pageAnswered(page);
+    var next = document.getElementById('next');
+    next.disabled = !done;
+    var hint = app.querySelector('.hint');
+    if (done && hint) hint.remove();
+    var counter = app.querySelector('.progress-label span:last-child');
+    if (counter) counter.textContent = countAnswered(page) + '/' + PER_PAGE + ' respondidas';
+  }
+
+  function renderResult() {
+    var scores = computeScores();
+    var top = scores[0];
+    var profile = PROFILES[top.key];
+
+    var html =
+      '<div class="progress">' +
+        '<div class="progress-label"><span>Teste concluído</span><span>30/30</span></div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>' +
+      '</div>' +
+      '<div class="result">' +
+        '<div class="result-hero">' +
+          '<div class="eyebrow">Seu perfil dominante é</div>' +
+          '<h2>' + profile.title + '</h2>' +
+          '<div class="desc">' + profile.desc + '</div>' +
+        '</div>' +
+        '<div class="career">' +
+          '<div class="eyebrow">Carreira</div>' +
+          '<h3>Onde você floresce profissionalmente</h3>' +
+          '<div class="career-intro">' + profile.careerIntro + '</div>' +
+          '<div class="career-pills">' +
+            profile.careers.map(function (c) { return '<span class="career-pill">✿ ' + c + '</span>'; }).join('') +
+          '</div>' +
+          '<div class="career-note">Sua ' + scores[1].label + ' também fala alto — valorize ' + PROFILES[scores[1].key].combo + '.</div>' +
+        '</div>' +
+        '<div class="traits">' +
+          '<h3>Como seus traços floresceram</h3>';
+
+    scores.forEach(function (s, idx) {
+      var isTop = idx === 0;
+      html +=
+        '<div class="trait-row' + (isTop ? ' top' : '') + '">' +
+          '<div class="trait-head">' +
+            '<span class="trait-name">' + s.label + (isTop ? '<span class="top-badge">dominante</span>' : '') + '</span>' +
+            '<span class="trait-pct">' + s.pct + '%</span>' +
+          '</div>' +
+          '<div class="trait-track">' +
+            '<div class="trait-bar" style="width:' + s.pct + '%; animation-delay:' + (idx * 0.12) + 's"></div>' +
+          '</div>' +
+        '</div>';
+    });
+
+    html +=
+        '</div>' +
+        '<div class="actions">' +
+          '<button type="button" class="btn btn-outline" id="restart">Refazer o teste</button>' +
+        '</div>' +
+      '</div>';
+
+    app.innerHTML = html;
+
+    document.getElementById('restart').addEventListener('click', function () {
+      state.page = 0;
+      state.answers = new Array(QUESTIONS.length).fill(null);
+      render();
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
