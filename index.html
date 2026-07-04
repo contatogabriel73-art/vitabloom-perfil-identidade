@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -442,6 +443,22 @@
     vertical-align: middle;
   }
 
+  .send-status {
+    font-size: 13.5px;
+    margin-top: 14px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    display: inline-block;
+  }
+  .send-status.ok { color: var(--sage-dark); background: rgba(168,181,160,.16); }
+  .send-status.err { color: var(--rose-dark); background: rgba(232,180,184,.16); }
+  .result .actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .btn-whats {
+    background: #25D366;
+    box-shadow: 0 12px 28px rgba(37,211,102,.35);
+  }
+  .btn-whats:hover:not(:disabled) { background: #1fb857; }
+
   footer {
     text-align: center;
     font-size: 12.5px;
@@ -477,6 +494,17 @@
 <script>
 (function () {
   'use strict';
+
+  // ===== EmailJS — cole aqui os 3 códigos da sua conta (emailjs.com) =====
+  // Enquanto estiverem vazios, o site funciona normal, só não envia e-mail.
+  var EMAILJS = {
+    publicKey: '',   // Account → General → Public Key
+    serviceId: '',   // Email Services → Gmail → Service ID
+    templateId: ''   // Email Templates → seu template → Template ID
+  };
+  var emailjsPronto = EMAILJS.publicKey && EMAILJS.serviceId && EMAILJS.templateId &&
+                      typeof emailjs !== 'undefined';
+  if (emailjsPronto) emailjs.init({ publicKey: EMAILJS.publicKey });
 
   // Traços: cada um aparece como opção em exatamente 10 das 30 perguntas,
   // então a porcentagem é (pontos / 10) * 100.
@@ -673,6 +701,7 @@
   var state = {
     started: false,                             // tela inicial → teste
     user: { name: '', email: '', phone: '' },
+    emailSent: false,                           // evita reenvio ao redesenhar o resultado
     page: 0,                                    // 0..3 = perguntas, 4 = resultado
     answers: new Array(QUESTIONS.length).fill(null) // 'a' | 'b' | null
   };
@@ -869,6 +898,37 @@
     if (counter) counter.textContent = countAnswered(page) + '/' + PER_PAGE + ' respondidas';
   }
 
+  function textoResultado(scores, profile) {
+    return 'Perfil dominante: ' + profile.title + '\n\n' +
+      scores.map(function (s) { return s.label + ': ' + s.pct + '%'; }).join('\n') +
+      '\n\nÁreas de carreira: ' + profile.careers.join(', ');
+  }
+
+  function enviarEmails(scores, profile) {
+    var statusEl = document.getElementById('send-status');
+    if (!emailjsPronto || !statusEl) return;
+    if (state.emailSent) {
+      statusEl.className = 'send-status ok';
+      statusEl.textContent = '✓ Cópia enviada para ' + state.user.email.trim();
+      return;
+    }
+    statusEl.className = 'send-status ok';
+    statusEl.textContent = 'Enviando uma cópia para seu e-mail…';
+    emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+      nome: state.user.name.trim(),
+      email: state.user.email.trim(),
+      telefone: state.user.phone,
+      perfil: profile.title,
+      resultado: textoResultado(scores, profile)
+    }).then(function () {
+      state.emailSent = true;
+      statusEl.textContent = '✓ Cópia enviada para ' + state.user.email.trim();
+    }, function () {
+      statusEl.className = 'send-status err';
+      statusEl.textContent = 'Não foi possível enviar o e-mail agora — mas seu resultado está aqui na tela.';
+    });
+  }
+
   function renderResult() {
     var scores = computeScores();
     var top = scores[0];
@@ -911,18 +971,30 @@
         '</div>';
     });
 
+    var digitos = '55' + state.user.phone.replace(/\D/g, '');
+    var msgWhats = encodeURIComponent(
+      '✿ Meu Perfil de Identidade — VITABLOOM ✿\n\n' +
+      textoResultado(scores, profile) +
+      '\n\nFaça o teste você também: https://contatogabriel73-art.github.io/vitabloom-perfil-identidade/'
+    );
+
     html +=
         '</div>' +
+        (emailjsPronto ? '<div style="text-align:center"><span class="send-status" id="send-status"></span></div>' : '') +
         '<div class="actions">' +
+          '<a class="btn btn-whats" style="text-decoration:none" target="_blank" rel="noopener" ' +
+            'href="https://wa.me/' + digitos + '?text=' + msgWhats + '">Receber no meu WhatsApp</a>' +
           '<button type="button" class="btn btn-outline" id="restart">Refazer o teste</button>' +
         '</div>' +
       '</div>';
 
     app.innerHTML = html;
+    enviarEmails(scores, profile);
 
     document.getElementById('restart').addEventListener('click', function () {
       state.page = 0;
       state.answers = new Array(QUESTIONS.length).fill(null);
+      state.emailSent = false;
       render();
     });
   }
