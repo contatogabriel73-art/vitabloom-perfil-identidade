@@ -232,6 +232,65 @@
     margin-top: 12px;
   }
 
+  /* ---------- Tela inicial ---------- */
+  .intro {
+    background: #fff;
+    border: 1px solid rgba(168,181,160,.3);
+    border-radius: 24px;
+    box-shadow: 0 14px 40px rgba(168,181,160,.12);
+    padding: clamp(26px, 5vw, 42px);
+    margin-top: clamp(24px, 5vw, 36px);
+    text-align: center;
+    animation: floatUp .5s ease both;
+  }
+  .intro .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+  }
+  .intro h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(26px, 5.5vw, 34px);
+    color: var(--sage-dark);
+    line-height: 1.2;
+  }
+  .intro-sub {
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--text-2);
+    max-width: 400px;
+    margin: 10px auto 24px;
+  }
+  .field { margin-bottom: 16px; text-align: left; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 9px;
+  }
+  .field input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(168,181,160,.45);
+    border-radius: 12px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--card-off);
+    outline: none;
+    transition: border-color .2s ease;
+  }
+  .field input:focus { border-color: var(--sage); }
+  .field input::placeholder { color: #b3ad9f; }
+  .intro .actions { margin-top: 22px; }
+
   /* ---------- Resultado ---------- */
   .result { animation: floatUp .6s ease both; }
   .result-hero {
@@ -612,7 +671,9 @@
 
   // Estado em memória (sem localStorage)
   var state = {
-    page: 0,                                    // 0..2 = perguntas, 3 = resultado
+    started: false,                             // tela inicial → teste
+    user: { name: '', email: '', phone: '' },
+    page: 0,                                    // 0..3 = perguntas, 4 = resultado
     answers: new Array(QUESTIONS.length).fill(null) // 'a' | 'b' | null
   };
 
@@ -655,12 +716,82 @@
   }
 
   function render() {
-    if (state.page >= TOTAL_PAGES) {
+    if (!state.started) {
+      renderIntro();
+    } else if (state.page >= TOTAL_PAGES) {
       renderResult();
     } else {
       renderPage();
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ---------- Tela inicial ----------
+  function maskPhone(digits) {
+    digits = digits.replace(/\D/g, '').slice(0, 11);
+    if (digits.length === 0) return '';
+    if (digits.length <= 2) return '(' + digits;
+    if (digits.length <= 6) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+    if (digits.length <= 10) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 6) + '-' + digits.slice(6);
+    return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+  }
+
+  function introValid() {
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(state.user.email.trim());
+    var phoneOk = state.user.phone.replace(/\D/g, '').length >= 10;
+    var nameOk = state.user.name.trim().length >= 2;
+    return nameOk && emailOk && phoneOk;
+  }
+
+  function renderIntro() {
+    app.innerHTML =
+      '<div class="intro">' +
+        '<div class="eyebrow">Antes de começar</div>' +
+        '<h2>Vamos nos conhecer?</h2>' +
+        '<div class="intro-sub">Preencha seus dados para iniciar o teste. São ' + QUESTIONS.length + ' perguntas rápidas — leva menos de 5 minutos.</div>' +
+        '<div class="field">' +
+          '<label for="intro-name">Nome</label>' +
+          '<input type="text" id="intro-name" placeholder="Como podemos te chamar?" autocomplete="name" value="' + state.user.name.replace(/"/g, '&quot;') + '">' +
+        '</div>' +
+        '<div class="field">' +
+          '<label for="intro-email">E-mail</label>' +
+          '<input type="email" id="intro-email" placeholder="seu@email.com" autocomplete="email" inputmode="email" value="' + state.user.email.replace(/"/g, '&quot;') + '">' +
+        '</div>' +
+        '<div class="field">' +
+          '<label for="intro-phone">WhatsApp</label>' +
+          '<input type="tel" id="intro-phone" placeholder="(00) 00000-0000" autocomplete="tel" inputmode="numeric" maxlength="16" value="' + state.user.phone + '">' +
+        '</div>' +
+        '<div class="actions">' +
+          '<button type="button" class="btn" id="start"' + (introValid() ? '' : ' disabled') + '>Começar o teste ✿</button>' +
+          '<div class="hint" id="intro-hint"' + (introValid() ? ' style="display:none"' : '') + '>Preencha nome, e-mail válido e WhatsApp para começar</div>' +
+        '</div>' +
+      '</div>';
+
+    var nameEl = document.getElementById('intro-name');
+    var emailEl = document.getElementById('intro-email');
+    var phoneEl = document.getElementById('intro-phone');
+
+    function sync() {
+      state.user.name = nameEl.value;
+      state.user.email = emailEl.value;
+      state.user.phone = phoneEl.value;
+      var ok = introValid();
+      document.getElementById('start').disabled = !ok;
+      document.getElementById('intro-hint').style.display = ok ? 'none' : '';
+    }
+
+    nameEl.addEventListener('input', sync);
+    emailEl.addEventListener('input', sync);
+    phoneEl.addEventListener('input', function () {
+      phoneEl.value = maskPhone(phoneEl.value);
+      sync();
+    });
+    document.getElementById('start').addEventListener('click', function () {
+      if (introValid()) {
+        state.started = true;
+        render();
+      }
+    });
   }
 
   function renderPage() {
@@ -750,7 +881,7 @@
       '</div>' +
       '<div class="result">' +
         '<div class="result-hero">' +
-          '<div class="eyebrow">Seu perfil dominante é</div>' +
+          '<div class="eyebrow">' + (state.user.name.trim() ? state.user.name.trim().split(/\s+/)[0] + ', seu' : 'Seu') + ' perfil dominante é</div>' +
           '<h2>' + profile.title + '</h2>' +
           '<div class="desc">' + profile.desc + '</div>' +
         '</div>' +
