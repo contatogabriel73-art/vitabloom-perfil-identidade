@@ -452,13 +452,6 @@
   }
   .send-status.ok { color: var(--sage-dark); background: rgba(168,181,160,.16); }
   .send-status.err { color: var(--rose-dark); background: rgba(232,180,184,.16); }
-  .result .actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-  .btn-whats {
-    background: #25D366;
-    box-shadow: 0 12px 28px rgba(37,211,102,.35);
-  }
-  .btn-whats:hover:not(:disabled) { background: #1fb857; }
-
   footer {
     text-align: center;
     font-size: 12.5px;
@@ -976,19 +969,10 @@
         '</div>';
     });
 
-    var digitos = '55' + state.user.phone.replace(/\D/g, '');
-    var msgWhats = encodeURIComponent(
-      '✿ Meu Perfil de Identidade — VITABLOOM ✿\n\n' +
-      textoResultado(scores, profile) +
-      '\n\nFaça o teste você também: https://contatogabriel73-art.github.io/vitabloom-perfil-identidade/'
-    );
-
     html +=
         '</div>' +
         (emailjsPronto ? '<div style="text-align:center"><span class="send-status" id="send-status"></span></div>' : '') +
         '<div class="actions">' +
-          '<a class="btn btn-whats" style="text-decoration:none" target="_blank" rel="noopener" ' +
-            'href="https://wa.me/' + digitos + '?text=' + msgWhats + '">Receber no meu WhatsApp</a>' +
           '<button type="button" class="btn btn-outline" id="restart">Refazer o teste</button>' +
         '</div>' +
       '</div>';
