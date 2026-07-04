@@ -495,14 +495,14 @@
 (function () {
   'use strict';
 
-  // ===== EmailJS — cole aqui os 3 códigos da sua conta (emailjs.com) =====
-  // Enquanto estiverem vazios, o site funciona normal, só não envia e-mail.
+  // ===== EmailJS — códigos da conta (emailjs.com) =====
   var EMAILJS = {
-    publicKey: '',   // Account → General → Public Key
-    serviceId: '',   // Email Services → Gmail → Service ID
-    templateId: ''   // Email Templates → seu template → Template ID
+    publicKey: 'kq1ihPoTXJRZcTPLA',
+    serviceId: 'service_pqkkl2c',
+    templateUser: 'template_2h7qez3',   // agradecimento + resultado para a pessoa
+    templateAdmin: 'template_fvz5vzm'   // aviso com nome + resultado para a VITABLOOM
   };
-  var emailjsPronto = EMAILJS.publicKey && EMAILJS.serviceId && EMAILJS.templateId &&
+  var emailjsPronto = EMAILJS.publicKey && EMAILJS.serviceId && EMAILJS.templateUser &&
                       typeof emailjs !== 'undefined';
   if (emailjsPronto) emailjs.init({ publicKey: EMAILJS.publicKey });
 
@@ -914,19 +914,24 @@
     }
     statusEl.className = 'send-status ok';
     statusEl.textContent = 'Enviando uma cópia para seu e-mail…';
-    emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+    var params = {
       nome: state.user.name.trim(),
       email: state.user.email.trim(),
       telefone: state.user.phone,
       perfil: profile.title,
       resultado: textoResultado(scores, profile)
-    }).then(function () {
+    };
+    emailjs.send(EMAILJS.serviceId, EMAILJS.templateUser, params).then(function () {
       state.emailSent = true;
       statusEl.textContent = '✓ Cópia enviada para ' + state.user.email.trim();
     }, function () {
       statusEl.className = 'send-status err';
       statusEl.textContent = 'Não foi possível enviar o e-mail agora — mas seu resultado está aqui na tela.';
     });
+    if (EMAILJS.templateAdmin) {
+      emailjs.send(EMAILJS.serviceId, EMAILJS.templateAdmin, params)
+        .catch(function () { /* cópia interna; não afeta a experiência da pessoa */ });
+    }
   }
 
   function renderResult() {
