@@ -111,6 +111,59 @@
   }
   .center { text-align: center; }
 
+  /* ---------- Vídeo ---------- */
+  .video-card { padding: clamp(18px, 3.5vw, 28px); }
+  .video-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(168,181,160,.25), rgba(232,180,184,.25));
+    margin-top: 14px;
+  }
+  .video-box iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    padding: 20px;
+  }
+  .video-placeholder .play {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 26px rgba(168,181,160,.4);
+  }
+  .video-placeholder .play::after {
+    content: '';
+    border-left: 20px solid var(--sage-dark);
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    margin-left: 5px;
+  }
+  .video-placeholder .txt {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--sage-dark);
+  }
+
   .palavras {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
@@ -126,11 +179,59 @@
     margin-top: 12px;
   }
 
+  /* ---------- Depoimentos ---------- */
+  .depo {
+    background: var(--card-off);
+    border: 1px solid rgba(168,181,160,.3);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-top: 14px;
+  }
+  .depo .fala {
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--text-2);
+    font-style: italic;
+  }
+  .depo .quem {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sage-mid);
+    margin-top: 10px;
+  }
+  .depo .quem::before { content: '✿ '; color: var(--rose-dark); }
+
+  /* ---------- Preço ---------- */
+  .preco-card {
+    background: linear-gradient(135deg, rgba(232,180,184,.14), rgba(168,181,160,.1));
+    border: 2px solid var(--rose);
+    box-shadow: 0 14px 40px rgba(232,180,184,.25);
+    text-align: center;
+  }
+  .preco-valor {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(46px, 10vw, 62px);
+    color: var(--rose-dark);
+    line-height: 1;
+    margin: 16px 0 2px;
+  }
+  .preco-valor .moeda { font-size: .45em; vertical-align: super; }
+  .preco-nota {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-bottom: 18px;
+  }
+  .inclui {
+    text-align: left;
+    max-width: 430px;
+    margin: 0 auto;
+  }
   .item {
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    padding: 13px 0;
+    padding: 11px 0;
     border-bottom: 1px solid rgba(168,181,160,.25);
   }
   .item:last-child { border-bottom: none; }
@@ -160,12 +261,6 @@
   .passo .txt { font-size: 14.5px; color: var(--text-2); font-weight: 300; padding-top: 5px; }
   .passo .txt strong { color: var(--sage-dark); font-weight: 600; }
 
-  .cta-final {
-    background: linear-gradient(135deg, rgba(232,180,184,.14), rgba(168,181,160,.1));
-    border: 2px solid var(--rose);
-    box-shadow: 0 14px 40px rgba(232,180,184,.25);
-    text-align: center;
-  }
   .btn {
     display: inline-block;
     font-family: 'Open Sans', sans-serif;
@@ -180,7 +275,7 @@
     text-decoration: none;
     box-shadow: 0 12px 28px rgba(232,180,184,.45);
     transition: all .25s ease;
-    margin-top: 18px;
+    margin-top: 20px;
   }
   .btn:hover { background: #df9ea3; transform: translateY(-2px); }
   .nota {
@@ -216,14 +311,17 @@
     <div class="deco"></div>
   </header>
 
-  <!-- Hero personalizado -->
-  <section class="card center">
+  <!-- Hero + Vídeo -->
+  <section class="card video-card center">
     <div class="eyebrow">Sua devolutiva personalizada</div>
-    <h2 id="saudacao">Seu próximo passo começa aqui</h2>
+    <h2 id="saudacao">Você chegou até aqui ✿</h2>
     <div id="pill-wrap"></div>
-    <p class="hero-text">Você acabou de descobrir seu perfil de identidade. Agora vem a parte que transforma:
-    entender <strong>como usar essa força</strong> para vencer seus obstáculos e chegar aonde você quer —
-    na sua vida profissional e dentro de você.</p>
+    <div class="video-box" id="video-box">
+      <div class="video-placeholder">
+        <div class="play"></div>
+        <div class="txt">Aperte o play e veja o recado que preparei para você</div>
+      </div>
+    </div>
   </section>
 
   <!-- Sobre a VITABLOOM -->
@@ -239,36 +337,38 @@
     curiosidade e vira direção.</p>
   </section>
 
-  <!-- O que você recebe -->
-  <section class="card">
-    <div class="eyebrow">O que você recebe</div>
-    <h2>Na sua devolutiva</h2>
-    <div style="margin-top:18px">
+  <!-- Depoimentos (aparece só quando houver depoimentos reais) -->
+  <section class="card" id="depoimentos" style="display:none">
+    <div class="eyebrow">Quem já fez</div>
+    <h2>O que dizem da devolutiva</h2>
+    <div id="depo-lista"></div>
+  </section>
+
+  <!-- Preço -->
+  <section class="card preco-card">
+    <div class="eyebrow" style="color:var(--rose-dark)">Investimento</div>
+    <h2 id="cta-titulo">Sua devolutiva completa</h2>
+    <div class="preco-valor"><span class="moeda">R$</span> 50</div>
+    <div class="preco-nota">pagamento único · via Pix, combinado no WhatsApp</div>
+    <div class="inclui">
       <div class="item"><span class="flor">✿</span><span class="txt"><strong>Leitura completa do seu perfil</strong> — o que os seus traços dizem sobre a sua forma de agir, decidir e se relacionar.</span></div>
       <div class="item"><span class="flor">✿</span><span class="txt"><strong>Seus pontos fortes</strong> — e como usá-los a seu favor no trabalho e nos estudos.</span></div>
       <div class="item"><span class="flor">✿</span><span class="txt"><strong>Os obstáculos típicos do seu perfil</strong> — os padrões que costumam travar pessoas como você, e como superá-los.</span></div>
       <div class="item"><span class="flor">✿</span><span class="txt"><strong>Um plano prático</strong> — passos concretos para você chegar aonde quer na sua vida profissional.</span></div>
     </div>
+    <a class="btn" id="btn-whats" target="_blank" rel="noopener" href="https://wa.me/5547984838302">Quero minha devolutiva ✿</a>
+    <div class="nota">Sua mensagem já vai pronta — é só enviar.</div>
+    <br>
+    <a class="voltar" href="./">← Voltar ao teste</a>
   </section>
 
   <!-- Como funciona -->
   <section class="card">
     <div class="eyebrow">Como funciona</div>
     <h2>Simples assim</h2>
-    <div class="passo"><div class="num">1</div><div class="txt"><strong>Chame no WhatsApp</strong> pelo botão abaixo — sua mensagem já vai pronta, com seu nome e seu perfil.</div></div>
-    <div class="passo"><div class="num">2</div><div class="txt"><strong>Conte seu momento</strong> — a gente conversa sobre onde você está e onde quer chegar.</div></div>
+    <div class="passo"><div class="num">1</div><div class="txt"><strong>Chame no WhatsApp</strong> pelo botão acima — sua mensagem já vai pronta, com seu nome e seu perfil.</div></div>
+    <div class="passo"><div class="num">2</div><div class="txt"><strong>Confirme pelo Pix</strong> — a gente combina tudo na conversa, rapidinho.</div></div>
     <div class="passo"><div class="num">3</div><div class="txt"><strong>Receba sua devolutiva</strong> — personalizada para o seu perfil e para o seu objetivo.</div></div>
-  </section>
-
-  <!-- CTA final -->
-  <section class="card cta-final">
-    <div class="eyebrow" style="color:var(--rose-dark)">Próximo passo</div>
-    <h2 id="cta-titulo">Vamos conversar?</h2>
-    <p class="hero-text">Toque no botão e sua mensagem chega prontinha no nosso WhatsApp.</p>
-    <a class="btn" id="btn-whats" target="_blank" rel="noopener" href="https://wa.me/5547984838302">Quero minha devolutiva ✿</a>
-    <div class="nota">Sem compromisso — a primeira conversa é para nos conhecermos.</div>
-    <br>
-    <a class="voltar" href="./">← Voltar ao teste</a>
   </section>
 
   <footer>
@@ -281,6 +381,19 @@
 <script>
 (function () {
   'use strict';
+
+  // ===== CONFIGURAÇÃO =====
+  // Vídeo: cole o ID do YouTube (ex.: para youtube.com/watch?v=ABC123, o ID é 'ABC123').
+  // Vazio = mostra o quadro de "em breve".
+  var VIDEO_YOUTUBE_ID = '';
+
+  // Depoimentos: adicione objetos { fala: '...', quem: '...' }.
+  // A seção só aparece quando houver pelo menos um.
+  var DEPOIMENTOS = [
+    // { fala: 'A devolutiva me abriu os olhos para coisas que eu nem percebia em mim.', quem: 'Maria S., fez a devolutiva do perfil Visionário' },
+  ];
+  // ========================
+
   var params = new URLSearchParams(window.location.search);
   var nome = (params.get('nome') || '').trim();
   var perfil = (params.get('perfil') || '').trim();
@@ -288,8 +401,7 @@
 
   // Personalização segura (textContent evita injeção via URL)
   if (primeiro) {
-    document.getElementById('saudacao').textContent = primeiro + ', seu próximo passo começa aqui';
-    document.getElementById('cta-titulo').textContent = 'Vamos conversar, ' + primeiro + '?';
+    document.getElementById('saudacao').textContent = primeiro + ', você chegou até aqui ✿';
   }
   if (perfil) {
     var pill = document.createElement('span');
@@ -298,9 +410,41 @@
     document.getElementById('pill-wrap').appendChild(pill);
   }
 
+  // Vídeo
+  if (VIDEO_YOUTUBE_ID) {
+    var box = document.getElementById('video-box');
+    box.innerHTML = '';
+    var iframe = document.createElement('iframe');
+    iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(VIDEO_YOUTUBE_ID);
+    iframe.title = 'Mensagem da VITABLOOM';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    box.appendChild(iframe);
+  }
+
+  // Depoimentos
+  if (DEPOIMENTOS.length > 0) {
+    var lista = document.getElementById('depo-lista');
+    DEPOIMENTOS.forEach(function (d) {
+      var el = document.createElement('div');
+      el.className = 'depo';
+      var fala = document.createElement('div');
+      fala.className = 'fala';
+      fala.textContent = '“' + d.fala + '”';
+      var quem = document.createElement('div');
+      quem.className = 'quem';
+      quem.textContent = d.quem;
+      el.appendChild(fala);
+      el.appendChild(quem);
+      lista.appendChild(el);
+    });
+    document.getElementById('depoimentos').style.display = '';
+  }
+
+  // WhatsApp com mensagem pronta
   var msg = 'Olá! ' + (nome ? 'Sou ' + nome + ' e a' : 'A') + 'cabei de fazer o teste Perfil de Identidade da VITABLOOM ✿\n\n' +
     (perfil ? 'Meu perfil dominante deu: ' + perfil + '\n\n' : '') +
-    'Quero receber minha devolutiva personalizada!';
+    'Quero fazer minha devolutiva personalizada (R$ 50)!';
   document.getElementById('btn-whats').href = 'https://wa.me/5547984838302?text=' + encodeURIComponent(msg);
 })();
 </script>
