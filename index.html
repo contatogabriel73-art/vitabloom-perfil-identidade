@@ -546,7 +546,7 @@
   var PROFILES = {
     disciplina: {
       title: 'O Estrategista',
-      desc: 'Você constrói a vida com constância e método. Onde outros veem caos, você enxerga um plano — e o segue até o fim. Sua força está na consistência silenciosa que transforma intenção em realidade.',
+      desc: 'Você constrói a vida com constância e método. Onde outros veem caos, você enxerga um plano, e o segue até o fim. Sua força está na consistência silenciosa que transforma intenção em realidade.',
       careerIntro: 'Você rende melhor em carreiras que valorizam organização, método e entrega consistente:',
       careers: ['Gestão de Projetos', 'Administração', 'Engenharia', 'Finanças e Controladoria', 'Logística e Operações', 'Auditoria e Carreiras Públicas'],
       combo: 'ambientes estruturados, com metas claras e processos bem definidos'
@@ -567,7 +567,7 @@
     },
     racionalidade: {
       title: 'O Analista',
-      desc: 'Você pensa antes de agir — e pensa bem. Fatos, lógica e clareza guiam suas escolhas, e é por isso que as pessoas confiam no seu julgamento. Sua força é a mente que separa o essencial do ruído.',
+      desc: 'Você pensa antes de agir, e pensa bem. Fatos, lógica e clareza guiam suas escolhas, e é por isso que as pessoas confiam no seu julgamento. Sua força é a mente que separa o essencial do ruído.',
       careerIntro: 'Você se destaca em carreiras que exigem lógica, análise e precisão:',
       careers: ['Ciência de Dados', 'Tecnologia e Engenharia de Software', 'Direito', 'Pesquisa Científica', 'Economia', 'Medicina e Diagnóstico'],
       combo: 'problemas complexos que pedem análise profunda'
@@ -803,7 +803,7 @@
       '<div class="intro">' +
         '<div class="eyebrow">Antes de começar</div>' +
         '<h2>Vamos nos conhecer?</h2>' +
-        '<div class="intro-sub">Preencha seus dados para iniciar o teste. São ' + QUESTIONS.length + ' perguntas rápidas — leva menos de 5 minutos.</div>' +
+        '<div class="intro-sub">Preencha seus dados para iniciar o teste. São ' + QUESTIONS.length + ' perguntas rápidas, leva menos de 5 minutos.</div>' +
         '<div class="field">' +
           '<label for="intro-name">Nome</label>' +
           '<input type="text" id="intro-name" placeholder="Como podemos te chamar?" autocomplete="name" value="' + state.user.name.replace(/"/g, '&quot;') + '">' +
@@ -952,7 +952,7 @@
       statusEl.textContent = '✓ Cópia enviada para ' + state.user.email.trim();
     }, function () {
       statusEl.className = 'send-status err';
-      statusEl.textContent = 'Não foi possível enviar o e-mail agora — mas seu resultado está aqui na tela.';
+      statusEl.textContent = 'Não foi possível enviar o e-mail agora, mas seu resultado está aqui na tela.';
     });
     if (EMAILJS.templateAdmin) {
       emailjs.send(EMAILJS.serviceId, EMAILJS.templateAdmin, params)
@@ -983,7 +983,7 @@
           '<div class="career-pills">' +
             profile.careers.map(function (c) { return '<span class="career-pill">✿ ' + c + '</span>'; }).join('') +
           '</div>' +
-          '<div class="career-note">Sua ' + scores[1].label + ' também fala alto — valorize ' + PROFILES[scores[1].key].combo + '.</div>' +
+          '<div class="career-note">Sua ' + scores[1].label + ' também fala alto: valorize ' + PROFILES[scores[1].key].combo + '.</div>' +
         '</div>' +
         '<div class="traits">' +
           '<h3>Como seus traços floresceram</h3>';
