@@ -1003,11 +1003,8 @@
     });
 
     var primeiroNome = state.user.name.trim().split(/\s+/)[0] || '';
-    var msgDevolutiva = encodeURIComponent(
-      'Olá! Sou ' + state.user.name.trim() + ' e acabei de fazer o teste Perfil de Identidade da VITABLOOM ✿\n\n' +
-      'Meu perfil dominante deu: ' + profile.title + '\n\n' +
-      'Quero receber minha devolutiva personalizada!'
-    );
+    var linkDevolutiva = 'devolutiva.html?nome=' + encodeURIComponent(state.user.name.trim()) +
+      '&perfil=' + encodeURIComponent(profile.title);
 
     html +=
         '</div>' +
@@ -1015,8 +1012,7 @@
           '<div class="eyebrow">Próximo passo</div>' +
           '<h3>' + (primeiroNome ? primeiroNome + ', quer' : 'Quer') + ' transformar esse resultado em um plano?</h3>' +
           '<p>Conhecer seu perfil é só o começo. Na <strong>devolutiva personalizada</strong>, você descobre como usar a força de <strong>' + profile.title + '</strong> para vencer seus obstáculos e chegar aonde quer na sua vida profissional.</p>' +
-          '<a class="btn btn-rose" target="_blank" rel="noopener" ' +
-            'href="https://wa.me/5547984838302?text=' + msgDevolutiva + '">Quero minha devolutiva ✿</a>' +
+          '<a class="btn btn-rose" href="' + linkDevolutiva + '">Quero minha devolutiva ✿</a>' +
         '</div>' +
         (emailjsPronto ? '<div style="text-align:center"><span class="send-status" id="send-status"></span></div>' : '') +
         '<div class="actions">' +

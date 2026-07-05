@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devolutiva Personalizada · VITABLOOM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --sage: #A8B5A0;
+    --sage-dark: #5d6b56;
+    --sage-mid: #6e7d66;
+    --sage-soft: #7a8a72;
+    --cream: #F5F0E8;
+    --card-off: #fdfcf9;
+    --rose: #E8B4B8;
+    --rose-dark: #b06a70;
+    --text: #4a4a42;
+    --text-2: #6b6a60;
+    --text-3: #8a857a;
+  }
+
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  body {
+    font-family: 'Open Sans', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px) 60px;
+  }
+
+  .brand {
+    text-align: center;
+    padding-top: clamp(18px, 4vw, 34px);
+    animation: floatUp .6s ease both;
+  }
+  .brand h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(30px, 6vw, 44px);
+    color: var(--sage-dark);
+    letter-spacing: 2px;
+  }
+  .brand .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(15px, 3vw, 18px);
+    color: var(--sage-soft);
+    margin-top: 4px;
+  }
+  .deco { width: 46px; height: 2px; background: var(--rose); margin: 18px auto 0; }
+
+  .card {
+    background: #fff;
+    border: 1px solid rgba(168,181,160,.3);
+    border-radius: 24px;
+    box-shadow: 0 14px 40px rgba(168,181,160,.12);
+    padding: clamp(26px, 5vw, 42px) clamp(22px, 5vw, 38px);
+    margin-top: 24px;
+    animation: floatUp .7s ease both;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(26px, 5.5vw, 36px);
+    color: var(--sage-dark);
+    line-height: 1.2;
+    text-align: center;
+  }
+  .perfil-pill {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--rose);
+    padding: 7px 18px;
+    border-radius: 20px;
+    margin: 14px 0 4px;
+  }
+  .hero-text {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-2);
+    max-width: 480px;
+    margin: 14px auto 0;
+    text-align: center;
+  }
+  .center { text-align: center; }
+
+  .palavras {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 21px;
+    color: var(--sage);
+    text-align: center;
+    margin: 16px 0;
+  }
+  .card p.corpo {
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--text-2);
+    margin-top: 12px;
+  }
+
+  .item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(168,181,160,.25);
+  }
+  .item:last-child { border-bottom: none; }
+  .item .flor { color: var(--rose-dark); flex: none; margin-top: 2px; }
+  .item strong { color: var(--sage-dark); font-weight: 600; }
+  .item span.txt { font-size: 14.5px; color: var(--text-2); font-weight: 300; }
+
+  .passo {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 16px;
+  }
+  .passo .num {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--sage);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .passo .txt { font-size: 14.5px; color: var(--text-2); font-weight: 300; padding-top: 5px; }
+  .passo .txt strong { color: var(--sage-dark); font-weight: 600; }
+
+  .cta-final {
+    background: linear-gradient(135deg, rgba(232,180,184,.14), rgba(168,181,160,.1));
+    border: 2px solid var(--rose);
+    box-shadow: 0 14px 40px rgba(232,180,184,.25);
+    text-align: center;
+  }
+  .btn {
+    display: inline-block;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+    background: var(--rose);
+    border: none;
+    border-radius: 34px;
+    padding: 16px 40px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 12px 28px rgba(232,180,184,.45);
+    transition: all .25s ease;
+    margin-top: 18px;
+  }
+  .btn:hover { background: #df9ea3; transform: translateY(-2px); }
+  .nota {
+    font-size: 12.5px;
+    color: var(--text-3);
+    margin-top: 12px;
+  }
+  .voltar {
+    display: inline-block;
+    font-size: 13.5px;
+    color: var(--sage-mid);
+    margin-top: 20px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168,181,160,.5);
+  }
+  .voltar:hover { color: var(--sage-dark); }
+
+  footer {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-3);
+    margin-top: 44px;
+  }
+  footer a { color: var(--sage-mid); text-decoration: none; }
+  footer em { font-family: 'Cormorant Garamond', serif; color: var(--sage-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="brand">
+    <h1>VITABLOOM</h1>
+    <div class="tagline">Bem-estar que vem de dentro e aparece por fora.</div>
+    <div class="deco"></div>
+  </header>
+
+  <!-- Hero personalizado -->
+  <section class="card center">
+    <div class="eyebrow">Sua devolutiva personalizada</div>
+    <h2 id="saudacao">Seu próximo passo começa aqui</h2>
+    <div id="pill-wrap"></div>
+    <p class="hero-text">Você acabou de descobrir seu perfil de identidade. Agora vem a parte que transforma:
+    entender <strong>como usar essa força</strong> para vencer seus obstáculos e chegar aonde você quer —
+    na sua vida profissional e dentro de você.</p>
+  </section>
+
+  <!-- Sobre a VITABLOOM -->
+  <section class="card">
+    <div class="eyebrow">Sobre a VITABLOOM</div>
+    <h2>Cuidar de você por inteiro</h2>
+    <div class="palavras">florescer · transformar · cultivar</div>
+    <p class="corpo">A VITABLOOM é uma marca de saúde e bem-estar dedicada ao equilíbrio que começa de dentro:
+    mente, autoconhecimento e uma vida em harmonia. Acreditamos que ninguém floresce por fora sem
+    cultivar o interior — e é esse cultivo que guiamos com você.</p>
+    <p class="corpo">O teste de Perfil de Identidade nasceu desse propósito: uma porta de entrada para você
+    se enxergar com mais clareza. A devolutiva é o passo seguinte — quando esse resultado deixa de ser
+    curiosidade e vira direção.</p>
+  </section>
+
+  <!-- O que você recebe -->
+  <section class="card">
+    <div class="eyebrow">O que você recebe</div>
+    <h2>Na sua devolutiva</h2>
+    <div style="margin-top:18px">
+      <div class="item"><span class="flor">✿</span><span class="txt"><strong>Leitura completa do seu perfil</strong> — o que os seus traços dizem sobre a sua forma de agir, decidir e se relacionar.</span></div>
+      <div class="item"><span class="flor">✿</span><span class="txt"><strong>Seus pontos fortes</strong> — e como usá-los a seu favor no trabalho e nos estudos.</span></div>
+      <div class="item"><span class="flor">✿</span><span class="txt"><strong>Os obstáculos típicos do seu perfil</strong> — os padrões que costumam travar pessoas como você, e como superá-los.</span></div>
+      <div class="item"><span class="flor">✿</span><span class="txt"><strong>Um plano prático</strong> — passos concretos para você chegar aonde quer na sua vida profissional.</span></div>
+    </div>
+  </section>
+
+  <!-- Como funciona -->
+  <section class="card">
+    <div class="eyebrow">Como funciona</div>
+    <h2>Simples assim</h2>
+    <div class="passo"><div class="num">1</div><div class="txt"><strong>Chame no WhatsApp</strong> pelo botão abaixo — sua mensagem já vai pronta, com seu nome e seu perfil.</div></div>
+    <div class="passo"><div class="num">2</div><div class="txt"><strong>Conte seu momento</strong> — a gente conversa sobre onde você está e onde quer chegar.</div></div>
+    <div class="passo"><div class="num">3</div><div class="txt"><strong>Receba sua devolutiva</strong> — personalizada para o seu perfil e para o seu objetivo.</div></div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="card cta-final">
+    <div class="eyebrow" style="color:var(--rose-dark)">Próximo passo</div>
+    <h2 id="cta-titulo">Vamos conversar?</h2>
+    <p class="hero-text">Toque no botão e sua mensagem chega prontinha no nosso WhatsApp.</p>
+    <a class="btn" id="btn-whats" target="_blank" rel="noopener" href="https://wa.me/5547984838302">Quero minha devolutiva ✿</a>
+    <div class="nota">Sem compromisso — a primeira conversa é para nos conhecermos.</div>
+    <br>
+    <a class="voltar" href="./">← Voltar ao teste</a>
+  </section>
+
+  <footer>
+    <a href="mailto:contato@vitabloom.com.br">contato@vitabloom.com.br</a> ·
+    <a href="https://wa.me/5547984838302">WhatsApp</a><br>
+    © 2026 VITABLOOM · <em>Cultivar, transformar e florescer.</em>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var params = new URLSearchParams(window.location.search);
+  var nome = (params.get('nome') || '').trim();
+  var perfil = (params.get('perfil') || '').trim();
+  var primeiro = nome.split(/\s+/)[0] || '';
+
+  // Personalização segura (textContent evita injeção via URL)
+  if (primeiro) {
+    document.getElementById('saudacao').textContent = primeiro + ', seu próximo passo começa aqui';
+    document.getElementById('cta-titulo').textContent = 'Vamos conversar, ' + primeiro + '?';
+  }
+  if (perfil) {
+    var pill = document.createElement('span');
+    pill.className = 'perfil-pill';
+    pill.textContent = 'Seu perfil: ' + perfil;
+    document.getElementById('pill-wrap').appendChild(pill);
+  }
+
+  var msg = 'Olá! ' + (nome ? 'Sou ' + nome + ' e a' : 'A') + 'cabei de fazer o teste Perfil de Identidade da VITABLOOM ✿\n\n' +
+    (perfil ? 'Meu perfil dominante deu: ' + perfil + '\n\n' : '') +
+    'Quero receber minha devolutiva personalizada!';
+  document.getElementById('btn-whats').href = 'https://wa.me/5547984838302?text=' + encodeURIComponent(msg);
+})();
+</script>
+</body>
+</html>
