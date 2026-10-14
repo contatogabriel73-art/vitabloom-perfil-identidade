@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perfil de Identidade · VITABLOOM</title>
+<title>VITABLOOM · Agendamento</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -18,11 +17,13 @@
     --sage-soft: #7a8a72;
     --cream: #F5F0E8;
     --card-off: #fdfcf9;
+    --white: #ffffff;
     --rose: #E8B4B8;
     --rose-dark: #b06a70;
     --text: #4a4a42;
     --text-2: #6b6a60;
     --text-3: #8a857a;
+    --soft-gray: #9a948a;
     --divider: rgba(168,181,160,.25);
   }
 
@@ -34,239 +35,352 @@
     from { opacity: 0; }
     to   { opacity: 1; }
   }
-  @keyframes growBar {
-    from { width: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; }
   }
+
+  html { scroll-behavior: smooth; }
 
   body {
     font-family: 'Open Sans', -apple-system, sans-serif;
     background: var(--cream);
     color: var(--text);
     line-height: 1.6;
-    min-height: 100vh;
+    font-weight: 300;
   }
 
-  .wrap {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px) 60px;
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--sage-dark);
+    text-wrap: balance;
   }
 
-  /* ---------- Cabeçalho ---------- */
-  .brand {
-    text-align: center;
-    padding-top: clamp(18px, 4vw, 34px);
-  }
-  .brand .eyebrow {
-    font-size: 12px;
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 32px); }
+  .container-narrow { max-width: 760px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 32px); }
+  .container-form { max-width: 680px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 32px); }
+
+  .eyebrow {
+    font-size: 12.5px;
     font-weight: 600;
-    letter-spacing: 3.5px;
+    letter-spacing: 3.2px;
     text-transform: uppercase;
     color: var(--rose);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
-  .brand h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-size: clamp(34px, 7vw, 52px);
-    color: var(--sage-dark);
-    line-height: 1.15;
-  }
-  .brand .tagline {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: clamp(17px, 3vw, 21px);
-    color: var(--sage-soft);
-    margin-top: 6px;
-  }
-  .brand .deco {
-    width: 46px;
-    height: 2px;
-    background: var(--rose);
-    margin: 18px auto 0;
-  }
+  .eyebrow.center { text-align: center; }
 
-  /* ---------- Progresso ---------- */
-  .progress {
-    margin: clamp(24px, 5vw, 36px) 0 clamp(20px, 4vw, 30px);
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--sage);
-    margin-bottom: 9px;
-  }
-  .progress-track {
-    height: 8px;
-    background: rgba(168,181,160,.22);
-    border-radius: 20px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--sage), var(--rose));
-    border-radius: 20px;
-    transition: width .5s ease;
-  }
-
-  /* ---------- Página de perguntas ---------- */
-  .page { animation: floatUp .5s ease both; }
-
-  .q-card {
-    background: #fff;
-    border: 1px solid rgba(168,181,160,.3);
-    border-radius: 22px;
-    box-shadow: 0 14px 40px rgba(168,181,160,.12);
-    padding: clamp(20px, 4vw, 28px);
-    margin-bottom: 16px;
-  }
-  .q-num {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--rose-dark);
-    margin-bottom: 6px;
-  }
-  .q-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: clamp(19px, 3.4vw, 23px);
-    color: var(--sage-dark);
-    margin-bottom: 16px;
-    line-height: 1.35;
-  }
-  .options { display: flex; flex-direction: column; gap: 10px; }
-
-  .opt {
-    width: 100%;
-    text-align: left;
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 30px;
     font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
     font-size: 15px;
-    font-weight: 400;
-    color: var(--text-2);
-    background: var(--card-off);
-    border: 1.5px solid rgba(168,181,160,.45);
-    border-radius: 14px;
-    padding: 14px 16px;
-    min-height: 48px;
+    padding: 15px 30px;
     cursor: pointer;
-    transition: all .22s ease;
+    min-height: 44px;
+    transition: background .2s ease, color .2s ease, transform .15s ease;
+  }
+  .btn-sage { background: var(--sage); color: #fff; box-shadow: 0 12px 28px rgba(168,181,160,.4); }
+  .btn-sage:hover { background: #97a690; }
+  .btn-outline { background: #fff; color: var(--sage-mid); border: 1.5px solid var(--sage); }
+  .btn-outline:hover { background: var(--sage); color: #fff; }
+  .btn-rose { background: var(--rose); color: #fff; box-shadow: 0 12px 28px rgba(232,180,184,.45); }
+  .btn-rose:hover { background: #df9ea3; }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+    outline: 2.5px solid var(--sage-dark);
+    outline-offset: 2px;
+  }
+
+  .deco-line { width: 46px; height: 2px; background: var(--rose); margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(245,240,232,.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(168,181,160,.28);
+  }
+  .nav {
     display: flex;
     align-items: center;
-    gap: 11px;
+    justify-content: space-between;
+    padding: 16px 0;
+    gap: 16px;
   }
-  .opt:hover { border-color: var(--sage); background: rgba(168,181,160,.08); }
-  .opt .dot {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 1.5px solid var(--sage);
-    background: #fff;
-    transition: all .22s ease;
-    position: relative;
-  }
-  .opt.selected {
-    background: var(--sage);
-    border-color: var(--sage);
-    color: #fff;
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
     font-weight: 600;
-    box-shadow: 0 8px 22px rgba(168,181,160,.4);
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--sage-dark);
   }
-  .opt.selected .dot { background: #fff; border-color: #fff; }
-  .opt.selected .dot::after {
-    content: '';
-    position: absolute;
-    inset: 4px;
-    border-radius: 50%;
-    background: var(--sage-dark);
+  .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+  .nav-links a {
+    font-size: 14.5px;
+    font-weight: 400;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color .2s ease;
   }
-  .ou {
-    text-align: center;
+  .nav-links a:hover { color: var(--sage-soft); }
+  .nav-cta {
+    background: var(--sage);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 30px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: #97a690; }
+  @media (max-width: 680px) {
+    .nav-links .nav-link-text { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    background: var(--cream);
+    overflow: hidden;
+    padding: clamp(56px, 10vw, 100px) 0 clamp(60px, 9vw, 90px);
+  }
+  .blob { position: absolute; border-radius: 50%; filter: blur(2px); pointer-events: none; }
+  .blob-rose {
+    width: 320px; height: 320px; top: -120px; right: -80px;
+    background: radial-gradient(circle, rgba(232,180,184,.35), transparent 70%);
+  }
+  .blob-sage {
+    width: 380px; height: 380px; bottom: -160px; left: -120px;
+    background: radial-gradient(circle, rgba(168,181,160,.35), transparent 70%);
+  }
+  .hero-inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(32px, 6vw, 64px);
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-text { flex: 1 1 400px; animation: floatUp .8s ease both; }
+  .hero-text h1 {
+    font-weight: 500;
+    font-size: clamp(48px, 8vw, 82px);
+    letter-spacing: 1px;
+    line-height: 1.02;
+  }
+  .hero-tagline {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 14px;
-    color: var(--text-3);
-    line-height: 1;
-    margin: -2px 0;
+    font-weight: 500;
+    font-size: clamp(22px, 3.2vw, 30px);
+    color: var(--sage-soft);
+    margin-top: 14px;
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text-2);
+    max-width: 440px;
+    margin-top: 18px;
+  }
+  .hero-text .btn { margin-top: 30px; border-radius: 34px; padding: 17px 34px; }
+  .hero-image {
+    flex: 1 1 320px;
+    min-width: 260px;
+    aspect-ratio: 4 / 5;
+    border-radius: 28px;
+    background: linear-gradient(145deg, rgba(168,181,160,.35), rgba(232,180,184,.35));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: floatUp 1s ease both;
+    max-width: 100%;
+  }
+  .hero-image span {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--sage-dark);
+    opacity: .7;
+    text-align: center;
+    padding: 20px;
   }
 
-  /* ---------- Botão avançar ---------- */
-  .actions { margin-top: 26px; text-align: center; }
-  .btn {
+  /* ---------- Sobre ---------- */
+  .section-sobre { background: #fff; padding: clamp(64px, 10vw, 110px) 0; text-align: center; }
+  .section-sobre h2 { font-weight: 500; font-size: clamp(32px, 5vw, 44px); margin-bottom: 20px; }
+  .keywords {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 21px;
+    color: var(--sage);
+    margin: 22px 0 26px;
+  }
+  .section-sobre p { color: var(--text-2); font-size: 16px; margin-top: 16px; }
+
+  /* ---------- Serviços ---------- */
+  .section-servicos { background: var(--cream); padding: clamp(64px, 10vw, 110px) 0; }
+  .section-head { text-align: center; max-width: 620px; margin: 0 auto 50px; }
+  .section-head h2 { font-weight: 500; font-size: clamp(32px, 5vw, 44px); }
+  .cards-row { display: flex; gap: 26px; flex-wrap: wrap; }
+  .service-card {
+    flex: 1 1 320px;
+    background: #fff;
+    border-radius: 22px;
+    border: 1px solid rgba(168,181,160,.3);
+    box-shadow: 0 14px 40px rgba(168,181,160,.12);
+    padding: clamp(30px, 4vw, 42px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(168,181,160,.2); }
+  .service-icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .service-icon.rose { background: rgba(232,180,184,.22); color: var(--rose-dark); }
+  .service-icon.sage { background: rgba(168,181,160,.22); color: var(--sage-dark); }
+  .service-card h3 { font-weight: 600; font-size: 24px; }
+  .service-card p { color: var(--text-2); font-size: 15px; }
+  .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .tag-pill {
+    font-size: 12.5px; color: var(--sage-soft);
+    background: rgba(168,181,160,.16);
+    padding: 6px 13px; border-radius: 20px;
+  }
+  .service-card .btn { margin-top: 10px; align-self: flex-start; }
+
+  /* ---------- Preços ---------- */
+  .section-precos { background: #fff; padding: clamp(64px, 10vw, 110px) 0; }
+  .tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 44px; flex-wrap: wrap; }
+  .tab-btn {
     font-family: 'Open Sans', sans-serif;
     font-weight: 600;
-    font-size: 16px;
-    color: #fff;
-    background: var(--sage);
-    border: none;
-    border-radius: 34px;
-    padding: 16px 40px;
-    min-height: 48px;
+    font-size: 14.5px;
+    padding: 12px 28px;
+    border-radius: 30px;
+    border: 1px solid transparent;
     cursor: pointer;
-    box-shadow: 0 12px 28px rgba(168,181,160,.4);
-    transition: all .25s ease;
+    min-height: 44px;
+    transition: background .2s ease, color .2s ease;
   }
-  .btn:hover:not(:disabled) { background: #97a690; transform: translateY(-2px); }
-  .btn:disabled {
-    background: rgba(168,181,160,.35);
-    box-shadow: none;
-    cursor: not-allowed;
+  .tab-btn[data-active="true"] { background: var(--sage); color: #fff; }
+  .tab-btn[data-active="false"] { background: var(--cream); color: var(--sage-mid); border-color: rgba(168,181,160,.3); }
+
+  .avulsos-box {
+    background: var(--card-off);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(168,181,160,.1);
+    padding: 8px clamp(14px, 3vw, 24px);
+    margin-bottom: 50px;
   }
-  .btn-rose { background: var(--rose); box-shadow: 0 12px 28px rgba(232,180,184,.45); }
-  .btn-rose:hover:not(:disabled) { background: #df9ea3; }
-  .btn-outline {
-    background: #fff;
+  .avulso-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 10px;
+    border-bottom: 1px solid var(--divider);
+    text-align: left;
+    width: 100%;
+    background: none;
+    border-left: none; border-right: none; border-top: none;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    min-height: 44px;
+    transition: background .15s ease;
+  }
+  .avulso-row:last-child { border-bottom: none; }
+  .avulso-row:hover { background: rgba(232,180,184,.1); }
+  .avulso-ico { color: var(--rose); font-size: 17px; flex-shrink: 0; }
+  .avulso-name { flex: 1; font-size: 15.5px; color: var(--text); }
+  .avulso-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 23px;
     color: var(--sage-mid);
-    border: 1.5px solid var(--sage);
-    box-shadow: none;
+    white-space: nowrap;
   }
-  .btn-outline:hover { background: var(--sage); color: #fff; }
-  .hint {
-    font-size: 13px;
-    color: var(--text-3);
-    margin-top: 12px;
+  .avulso-cta {
+    font-size: 12.5px; font-weight: 600; color: var(--sage-dark);
+    background: rgba(168,181,160,.18);
+    padding: 7px 14px; border-radius: 20px; white-space: nowrap;
   }
 
-  /* ---------- Tela inicial ---------- */
-  .intro {
+  .rituais-row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .ritual-card {
+    flex: 1 1 300px;
+    background: var(--card-off);
+    border: 1px solid rgba(168,181,160,.35);
+    border-radius: 22px;
+    padding: clamp(28px, 3.5vw, 34px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+  .ritual-card.destaque {
+    background: linear-gradient(160deg, #fff, rgba(232,180,184,.1));
+    border: 2px solid var(--rose);
+  }
+  .ritual-badge {
+    position: absolute; top: -13px; right: 22px;
+    background: var(--rose); color: #fff;
+    font-size: 11.5px; font-weight: 600; letter-spacing: .5px;
+    padding: 5px 14px; border-radius: 20px;
+  }
+  .ritual-card h3 { font-weight: 600; font-size: 22px; }
+  .ritual-card .ritual-desc { color: var(--text-2); font-size: 14.5px; }
+  .ritual-price-row { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; }
+  .ritual-price-old { color: var(--text-3); font-size: 15px; text-decoration: line-through; }
+  .ritual-price { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 30px; color: var(--rose-dark); }
+  .ritual-card.destaque .ritual-price { color: var(--rose-dark); }
+  .ritual-card:not(.destaque) .ritual-price { color: var(--sage-mid); }
+  .ritual-save { font-size: 12.5px; color: var(--sage-soft); font-weight: 600; }
+  .ritual-list { list-style: none; margin: 8px 0 14px; display: flex; flex-direction: column; gap: 6px; }
+  .ritual-list li { font-size: 14px; color: var(--text-2); display: flex; gap: 8px; }
+  .ritual-list li::before { content: "✿"; color: var(--sage); flex-shrink: 0; }
+  .ritual-card.destaque .ritual-list li::before { color: var(--rose); }
+  .ritual-card .btn { margin-top: auto; width: 100%; }
+
+  .auto-tab-empty { text-align: center; padding: 50px 20px; }
+  .status-badge {
+    display: inline-block;
+    background: rgba(232,180,184,.2);
+    color: var(--rose-dark);
+    font-size: 13px; font-weight: 600;
+    padding: 8px 20px; border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .auto-tab-empty p { color: var(--text-2); font-size: 15.5px; margin-bottom: 26px; }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- Agendamento ---------- */
+  .section-agendamento {
+    background: linear-gradient(180deg, rgba(168,181,160,.16), rgba(232,180,184,.1));
+    padding: clamp(64px, 10vw, 110px) 0;
+  }
+  .form-card {
     background: #fff;
-    border: 1px solid rgba(168,181,160,.3);
     border-radius: 24px;
-    box-shadow: 0 14px 40px rgba(168,181,160,.12);
-    padding: clamp(26px, 5vw, 42px);
-    margin-top: clamp(24px, 5vw, 36px);
-    text-align: center;
-    animation: floatUp .5s ease both;
+    box-shadow: 0 20px 60px rgba(168,181,160,.18);
+    padding: clamp(28px, 5vw, 48px);
   }
-  .intro .eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--rose);
-    margin-bottom: 10px;
-  }
-  .intro h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-size: clamp(26px, 5.5vw, 34px);
-    color: var(--sage-dark);
-    line-height: 1.2;
-  }
-  .intro-sub {
-    font-size: 14.5px;
-    font-weight: 300;
-    color: var(--text-2);
-    max-width: 400px;
-    margin: 10px auto 24px;
-  }
-  .field { margin-bottom: 16px; text-align: left; }
+  .form-head { text-align: center; margin-bottom: 30px; }
+  .form-head h2 { font-weight: 500; font-size: clamp(28px, 4.5vw, 36px); }
+  .form-head p { color: var(--text-2); font-size: 15px; margin-top: 8px; }
+
+  .field { margin-bottom: 22px; }
   .field label {
     display: block;
     font-size: 12px;
@@ -276,762 +390,828 @@
     color: var(--sage);
     margin-bottom: 9px;
   }
-  .field input {
+  .field input,
+  .field select {
     width: 100%;
     padding: 14px 16px;
     border: 1.5px solid rgba(168,181,160,.45);
     border-radius: 12px;
-    font-family: 'Open Sans', sans-serif;
     font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
     color: var(--text);
     background: var(--card-off);
-    outline: none;
-    transition: border-color .2s ease;
+    min-height: 44px;
   }
-  .field input:focus { border-color: var(--sage); }
   .field input::placeholder { color: #b3ad9f; }
-  .intro .actions { margin-top: 22px; }
+  .field input:focus, .field select:focus { border-color: var(--sage); outline: none; }
+  .field-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .field-row .field { flex: 1 1 200px; }
 
-  /* ---------- Resultado ---------- */
-  .result { animation: floatUp .6s ease both; }
-  .result-hero {
-    text-align: center;
-    background: #fff;
-    border: 2px solid var(--rose);
-    border-radius: 24px;
-    box-shadow: 0 14px 40px rgba(232,180,184,.2);
-    padding: clamp(30px, 6vw, 46px) clamp(22px, 5vw, 40px);
-    margin-bottom: 22px;
-  }
-  .result-hero .eyebrow {
-    font-size: 12px;
+  .type-pills { display: flex; gap: 10px; }
+  .type-pill {
+    flex: 1;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--rose);
-    margin-bottom: 12px;
-  }
-  .result-hero h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-size: clamp(30px, 6.5vw, 44px);
-    color: var(--sage-dark);
-    line-height: 1.15;
-  }
-  .result-hero .desc {
-    font-size: 15px;
-    font-weight: 300;
-    color: var(--text-2);
-    max-width: 460px;
-    margin: 14px auto 0;
-  }
-
-  .career {
-    background: #fff;
-    border: 1px solid rgba(168,181,160,.3);
-    border-radius: 22px;
-    box-shadow: 0 14px 40px rgba(168,181,160,.12);
-    padding: clamp(22px, 4.5vw, 34px);
-    margin-bottom: 22px;
-    text-align: center;
-  }
-  .career .eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--sage);
-    margin-bottom: 8px;
-  }
-  .career h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: 22px;
-    color: var(--sage-dark);
-    margin-bottom: 10px;
-  }
-  .career .career-intro {
     font-size: 14.5px;
-    font-weight: 300;
-    color: var(--text-2);
-    max-width: 480px;
-    margin: 0 auto 18px;
+    padding: 13px 10px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(168,181,160,.45);
+    cursor: pointer;
+    min-height: 44px;
+    text-align: center;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
   }
-  .career-pills {
+  .type-pill[data-active="true"] { background: var(--sage); color: #fff; border-color: var(--sage); }
+  .type-pill[data-active="false"] { background: var(--card-off); color: var(--text-2); }
+
+  .accordion { border: 1.5px solid rgba(168,181,160,.3); border-radius: 14px; overflow: hidden; margin-bottom: 14px; }
+  .accordion-head {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 9px;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-off);
+    border: none;
+    padding: 15px 18px;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    min-height: 44px;
+    text-align: left;
   }
-  .career-pill {
-    font-size: 13px;
+  .accordion-label {
+    flex: 1;
+    font-size: 12px;
     font-weight: 600;
-    color: var(--sage-mid);
-    background: rgba(168,181,160,.16);
-    border: 1px solid rgba(168,181,160,.35);
-    padding: 8px 16px;
-    border-radius: 20px;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
   }
-  .career-note {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 16px;
+  .accordion-label.avulsos-label { color: var(--sage-soft); }
+  .accordion-label.rituais-label { color: var(--rose-dark); }
+  .count-badge {
+    background: var(--rose);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 600;
+    border-radius: 20px;
+    min-width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+  }
+  .chevron { transition: transform .2s ease; color: var(--sage); flex-shrink: 0; }
+  .chevron.open { transform: rotate(180deg); }
+  .accordion-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .25s ease;
+    background: #fff;
+  }
+  .accordion-panel.open { max-height: 600px; }
+  .opt-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    border-top: 1px solid var(--divider);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .opt-row:hover { background: rgba(168,181,160,.07); }
+  .opt-box {
+    width: 20px; height: 20px;
+    border: 1.5px solid rgba(168,181,160,.6);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    color: #fff;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .opt-box.checkbox { border-radius: 5px; }
+  .opt-box.radio { border-radius: 50%; }
+  .opt-box.checked { background: var(--sage); border-color: var(--sage); }
+  .opt-box.checked.ritual { background: var(--rose); border-color: var(--rose); }
+  .opt-name { flex: 1; font-size: 15px; color: var(--text); }
+  .opt-price { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 17px; color: var(--text-2); white-space: nowrap; }
+
+  .error-msg {
+    background: rgba(232,180,184,.18);
     color: var(--rose-dark);
-    margin-top: 18px;
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
   }
 
-  .traits {
-    background: var(--card-off);
-    border: 1px solid rgba(168,181,160,.3);
-    border-radius: 22px;
-    box-shadow: 0 14px 40px rgba(168,181,160,.12);
-    padding: clamp(22px, 4.5vw, 34px);
-  }
-  .traits h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: 22px;
+  .submit-btn { width: 100%; margin-top: 10px; font-size: 16px; padding: 17px; }
+
+  .confirm-box { text-align: center; padding: 20px 0; animation: floatUp .5s ease both; }
+  .confirm-icon {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: rgba(168,181,160,.2);
     color: var(--sage-dark);
-    margin-bottom: 18px;
-    text-align: center;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 20px;
   }
-  .trait-row { margin-bottom: 16px; }
-  .trait-row:last-child { margin-bottom: 0; }
-  .trait-head {
+  .confirm-box h2 { font-weight: 500; font-size: 28px; margin-bottom: 10px; }
+  .confirm-box p { color: var(--text-2); font-size: 15.5px; max-width: 420px; margin: 0 auto 28px; }
+
+  /* ---------- Footer ---------- */
+  footer { background: var(--sage-dark); color: #eef0ea; padding: clamp(50px, 8vw, 76px) 0 30px; }
+  .footer-grid { display: flex; gap: 40px; flex-wrap: wrap; padding-bottom: 36px; }
+  .footer-col { flex: 1 1 220px; }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 24px; letter-spacing: 1px; }
+  .footer-tagline { font-size: 14px; color: #d3d8cd; margin-top: 8px; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+  .footer-col h4 { color: #eef0ea; font-family: 'Open Sans', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+  .footer-col a { display: block; color: #d3d8cd; font-size: 14.5px; text-decoration: none; margin-bottom: 10px; }
+  .footer-col a:hover { color: #fff; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.15);
+    padding-top: 22px;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
   }
-  .trait-name {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--sage-mid);
+  .footer-copy { font-size: 13px; color: #b9c0b2; }
+  .admin-trigger {
+    background: none; border: none;
+    color: #8f9c87;
+    font-size: 12.5px;
+    cursor: pointer;
+    padding: 8px;
   }
-  .trait-pct {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: 21px;
-    color: var(--rose-dark);
+  .admin-trigger:hover { color: #d3d8cd; }
+
+  /* ---------- Admin modal ---------- */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(74,74,66,.45);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn .2s ease both;
   }
-  .trait-track {
-    height: 12px;
-    background: rgba(168,181,160,.18);
+  .modal-box {
+    background: #fff;
     border-radius: 20px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
   }
-  .trait-bar {
-    height: 100%;
-    border-radius: 20px;
-    animation: growBar 1s ease both;
-  }
-  .trait-row.top .trait-bar { background: linear-gradient(90deg, var(--rose), var(--rose-dark)); }
-  .trait-row:not(.top) .trait-bar { background: linear-gradient(90deg, var(--sage), var(--sage-soft)); }
-  .top-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+  .modal-head {
+    background: var(--sage-dark);
     color: #fff;
-    background: var(--rose);
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-left: 8px;
-    vertical-align: middle;
+    padding: 20px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-
-  .send-status {
-    font-size: 13.5px;
-    margin-top: 14px;
-    padding: 10px 16px;
-    border-radius: 12px;
-    display: inline-block;
+  .modal-head h3 { color: #fff; font-weight: 600; font-size: 19px; }
+  .modal-count { font-size: 13px; color: #cdd6c7; margin-top: 2px; }
+  .modal-close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; line-height: 1; padding: 6px; }
+  .modal-list { overflow-y: auto; max-height: 70vh; padding: 10px 0; }
+  .booking-item {
+    padding: 16px 26px;
+    border-bottom: 1px solid var(--divider);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
-  .send-status.ok { color: var(--sage-dark); background: rgba(168,181,160,.16); }
-  .send-status.err { color: var(--rose-dark); background: rgba(232,180,184,.16); }
-  .cta {
-    background: linear-gradient(135deg, rgba(232,180,184,.14), rgba(168,181,160,.1));
-    border: 2px solid var(--rose);
-    border-radius: 24px;
-    box-shadow: 0 14px 40px rgba(232,180,184,.25);
-    padding: clamp(26px, 5vw, 40px) clamp(22px, 5vw, 36px);
-    margin-top: 22px;
-    text-align: center;
-  }
-  .cta .eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
+  .booking-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .booking-type-badge { font-size: 11.5px; font-weight: 600; padding: 4px 11px; border-radius: 20px; }
+  .booking-type-badge.estetica { background: rgba(232,180,184,.25); color: var(--rose-dark); }
+  .booking-type-badge.auto { background: rgba(168,181,160,.25); color: var(--sage-dark); }
+  .booking-name { font-weight: 600; font-size: 15.5px; color: var(--text); }
+  .booking-meta { font-size: 13.5px; color: var(--text-2); }
+  .booking-remove {
+    margin-top: 6px;
+    align-self: flex-start;
+    background: none;
+    border: 1px solid rgba(176,106,112,.4);
     color: var(--rose-dark);
-    margin-bottom: 10px;
-  }
-  .cta h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: clamp(23px, 5vw, 30px);
-    color: var(--sage-dark);
-    line-height: 1.25;
-  }
-  .cta p {
-    font-size: 14.5px;
-    font-weight: 300;
-    color: var(--text-2);
-    max-width: 440px;
-    margin: 12px auto 20px;
-  }
-  .cta .btn-rose { display: inline-block; text-decoration: none; }
-
-  footer {
-    text-align: center;
     font-size: 12.5px;
-    color: var(--text-3);
-    margin-top: 44px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
   }
-  footer em {
-    font-family: 'Cormorant Garamond', serif;
-    color: var(--sage-soft);
-  }
+  .booking-remove:hover { background: rgba(232,180,184,.15); }
+  .empty-admin { text-align: center; padding: 60px 26px; color: var(--text-3); font-size: 15px; }
 
-  @media (min-width: 560px) {
-    .options { flex-direction: row; align-items: stretch; }
-    .opt { flex: 1; }
-    .ou { align-self: center; margin: 0 -2px; }
+  @media (max-width: 560px) {
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="brand">
-    <div class="eyebrow">Autoconhecimento</div>
-    <h1>Perfil de Identidade</h1>
-    <div class="tagline">Descubra os traços que florescem em você.</div>
-    <div class="deco"></div>
-  </header>
 
-  <div id="app"></div>
+<header>
+  <div class="container nav">
+    <div class="logo">VITABLOOM</div>
+    <ul class="nav-links">
+      <li><a href="#sobre"><span class="nav-link-text">Sobre</span></a></li>
+      <li><a href="#servicos"><span class="nav-link-text">Serviços</span></a></li>
+      <li><a href="#precos" class="nav-cta">Agendar</a></li>
+    </ul>
+  </div>
+</header>
 
-  <footer>© 2026 VITABLOOM · <em>Cultivar, transformar e florescer.</em></footer>
+<section class="hero" id="inicio">
+  <div class="blob blob-rose"></div>
+  <div class="blob blob-sage"></div>
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <h1>VITABLOOM</h1>
+      <p class="hero-tagline">Bem-estar que vem de dentro e aparece por fora.</p>
+      <p class="hero-sub">Cuidados estéticos e espaço de autoconhecimento pensados para mulheres que querem florescer em cada fase da vida.</p>
+      <button class="btn btn-sage" id="btnHeroAgendar" type="button">Agendar minha consulta →</button>
+    </div>
+    <div class="hero-image">
+      <span>✿ foto em breve ✿</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-sobre" id="sobre">
+  <div class="container-narrow">
+    <div class="eyebrow center">Sobre a VITABLOOM</div>
+    <h2>Cuidar de você por inteiro</h2>
+    <div class="keywords">florescer · transformar · cultivar</div>
+    <p>A VITABLOOM nasceu para ser um espaço onde cuidado estético e cuidado interior andam juntos. Acreditamos que beleza verdadeira começa quando você se sente bem com quem é — por dentro e por fora.</p>
+    <p>Por isso, unimos protocolos estéticos cuidadosos a um espaço de autoconhecimento, para que cada visita seja também um momento de pausa, escuta e transformação.</p>
+  </div>
+</section>
+
+<section class="section-servicos" id="servicos">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow center">Nossos cuidados</div>
+      <h2>Por onde você quer florescer?</h2>
+    </div>
+    <div class="cards-row">
+      <div class="service-card">
+        <div class="service-icon rose">✿</div>
+        <h3>Estética</h3>
+        <p>Protocolos de pele, sobrancelhas e microagulhamento para realçar sua beleza natural com técnica e delicadeza.</p>
+        <div class="tag-row">
+          <span class="tag-pill">Limpeza de pele</span>
+          <span class="tag-pill">Peelings</span>
+          <span class="tag-pill">Sobrancelhas</span>
+          <span class="tag-pill">Microagulhamento</span>
+        </div>
+        <button class="btn btn-outline" id="btnCardEstetica" type="button">Quero agendar</button>
+      </div>
+      <div class="service-card">
+        <div class="service-icon sage">◐</div>
+        <h3>Autoconhecimento</h3>
+        <p>Um espaço de escuta e equilíbrio interior, para reconectar mente e corpo e florescer com mais clareza.</p>
+        <div class="tag-row">
+          <span class="tag-pill">Escuta terapêutica</span>
+          <span class="tag-pill">Equilíbrio interior</span>
+          <span class="tag-pill">Em breve</span>
+        </div>
+        <button class="btn btn-outline" id="btnCardAuto" type="button">Quero agendar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-precos" id="precos">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow center">Tabela de cuidados</div>
+      <h2>Escolha seu cuidado</h2>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn" id="tabBtnEstetica" type="button" data-active="true">Estética</button>
+      <button class="tab-btn" id="tabBtnAuto" type="button" data-active="false">Autoconhecimento</button>
+    </div>
+
+    <div id="tabEstetica">
+      <div class="avulsos-box" id="avulsosBoxPrecos"></div>
+      <div class="rituais-row" id="rituaisRowPrecos"></div>
+    </div>
+
+    <div id="tabAuto" hidden>
+      <div class="auto-tab-empty">
+        <div class="status-badge">Tabela e planos chegam em breve</div>
+        <p>Estamos preparando o espaço de autoconhecimento da VITABLOOM com todo o cuidado. Enquanto isso, você já pode garantir seu horário.</p>
+        <button class="btn btn-outline" id="btnAutoTabAgendar" type="button">Quero agendar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-agendamento" id="agendamento">
+  <div class="container-form">
+    <div class="form-card">
+
+      <div id="confirmState" hidden>
+        <div class="confirm-box">
+          <div class="confirm-icon">✓</div>
+          <h2>Que alegria ter você, <span id="confirmName"></span>!</h2>
+          <p>Recebemos seu agendamento. Em breve entraremos em contato pelo telefone informado para confirmar todos os detalhes.</p>
+          <button class="btn btn-sage" id="btnReset" type="button">Fazer outro agendamento</button>
+        </div>
+      </div>
+
+      <form id="bookingForm">
+        <div class="form-head">
+          <h2>Agende seu horário</h2>
+          <p>Preencha os dados abaixo e confirmaremos com você.</p>
+        </div>
+
+        <div class="field">
+          <label>Tipo de atendimento</label>
+          <div class="type-pills">
+            <button type="button" class="type-pill" id="pillEstetica" data-active="true">Estética</button>
+            <button type="button" class="type-pill" id="pillAuto" data-active="false">Autoconhecimento</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fDate">Data preferida</label>
+            <input type="date" id="fDate" name="date">
+          </div>
+          <div class="field">
+            <label for="fTime">Horário preferido</label>
+            <select id="fTime" name="time">
+              <option value="">Selecione</option>
+              <option>09:00</option>
+              <option>10:00</option>
+              <option>11:00</option>
+              <option>14:00</option>
+              <option>15:00</option>
+              <option>16:00</option>
+              <option>17:00</option>
+              <option>18:00</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" id="servicesField">
+          <label>Serviços desejados</label>
+
+          <div class="accordion">
+            <button type="button" class="accordion-head" id="accHeadAvulsos">
+              <span class="accordion-label avulsos-label">Serviços avulsos · escolha quantos quiser</span>
+              <span class="count-badge" id="avulsosCountBadge" hidden>0</span>
+              <span class="chevron" id="chevronAvulsos">▾</span>
+            </button>
+            <div class="accordion-panel" id="panelAvulsos"></div>
+          </div>
+
+          <div class="accordion">
+            <button type="button" class="accordion-head" id="accHeadRituais">
+              <span class="accordion-label rituais-label">Rituais · escolha um</span>
+              <span class="count-badge" id="ritualCountBadge" hidden>1</span>
+              <span class="chevron" id="chevronRituais">▾</span>
+            </button>
+            <div class="accordion-panel" id="panelRituais"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="fName">Nome completo</label>
+          <input type="text" id="fName" name="name" placeholder="Como podemos te chamar?">
+        </div>
+        <div class="field">
+          <label for="fPhone">Telefone / WhatsApp</label>
+          <input type="tel" id="fPhone" name="phone" placeholder="(00) 00000-0000">
+        </div>
+        <div class="field">
+          <label for="fEmail">E-mail</label>
+          <input type="email" id="fEmail" name="email" placeholder="seu@email.com">
+        </div>
+
+        <div class="error-msg" id="errorMsg" hidden></div>
+
+        <button type="submit" class="btn btn-sage submit-btn">Confirmar meu agendamento</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-logo">VITABLOOM</div>
+        <div class="footer-tagline">Cultivar, transformar e florescer.</div>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <a href="mailto:contato@vitabloom.com.br">contato@vitabloom.com.br</a>
+        <a href="https://wa.me/5547984838302" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+      <div class="footer-col">
+        <h4>Redes sociais</h4>
+        <a href="#" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" target="_blank" rel="noopener">Facebook</a>
+        <a href="#" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 VITABLOOM · Cultivar, transformar e florescer.</div>
+      <button class="admin-trigger" id="btnOpenAdmin" type="button">Área de gestão</button>
+    </div>
+  </div>
+</footer>
+
+<div id="adminOverlay" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3>Agendamentos recebidos</h3>
+        <div class="modal-count" id="modalCount">0 agendamentos</div>
+      </div>
+      <button class="modal-close" id="btnCloseAdmin" type="button">&times;</button>
+    </div>
+    <div class="modal-list" id="modalList"></div>
+  </div>
 </div>
 
 <script>
 (function () {
-  'use strict';
+  "use strict";
 
-  // ===== EmailJS — códigos da conta (emailjs.com) =====
-  var EMAILJS = {
-    publicKey: 'kq1ihPoTXJRZcTPLA',
-    serviceId: 'service_pqkkl2c',
-    templateUser: 'template_2h7qez3',   // agradecimento + resultado para a pessoa
-    templateAdmin: 'template_fvz5vzm'   // aviso com nome + resultado para a VITABLOOM
-  };
-  var emailjsPronto = EMAILJS.publicKey && EMAILJS.serviceId && EMAILJS.templateUser &&
-                      typeof emailjs !== 'undefined';
-  if (emailjsPronto) emailjs.init({ publicKey: EMAILJS.publicKey });
-
-  // Traços: cada um aparece como opção em exatamente 10 das 30 perguntas,
-  // então a porcentagem é (pontos / 10) * 100.
-  var TRAITS = {
-    disciplina:    { label: 'Disciplina' },
-    criatividade:  { label: 'Criatividade' },
-    sociabilidade: { label: 'Sociabilidade' },
-    racionalidade: { label: 'Racionalidade' },
-    ambicao:       { label: 'Ambição' },
-    empatia:       { label: 'Empatia' }
-  };
-
-  var PROFILES = {
-    disciplina: {
-      title: 'O Estrategista',
-      desc: 'Você constrói a vida com constância e método. Onde outros veem caos, você enxerga um plano, e o segue até o fim. Sua força está na consistência silenciosa que transforma intenção em realidade.',
-      careerIntro: 'Você rende melhor em carreiras que valorizam organização, método e entrega consistente:',
-      careers: ['Gestão de Projetos', 'Administração', 'Engenharia', 'Finanças e Controladoria', 'Logística e Operações', 'Auditoria e Carreiras Públicas'],
-      combo: 'ambientes estruturados, com metas claras e processos bem definidos'
-    },
-    criatividade: {
-      title: 'O Visionário',
-      desc: 'Sua mente vive um passo à frente do óbvio. Você enxerga possibilidades onde ninguém olhou ainda e prefere inventar o caminho a repetir fórmulas. Sua força é a originalidade que renova tudo ao redor.',
-      careerIntro: 'Você floresce em carreiras que pedem originalidade e liberdade para criar:',
-      careers: ['Design e UX', 'Marketing e Publicidade', 'Arquitetura', 'Produção de Conteúdo e Audiovisual', 'Moda e Estética', 'Inovação e Produto'],
-      combo: 'espaços abertos a ideias novas, sem fórmulas engessadas'
-    },
-    sociabilidade: {
-      title: 'O Conector',
-      desc: 'Pessoas são a sua energia. Você cria pontes com facilidade, anima ambientes e faz os outros se sentirem parte de algo. Sua força está em transformar encontros em vínculos.',
-      careerIntro: 'Você brilha em carreiras movidas a gente, conversa e relacionamento:',
-      careers: ['Vendas e Negociação', 'Relações Públicas', 'Recursos Humanos', 'Eventos e Produção Cultural', 'Sucesso do Cliente', 'Turismo e Hotelaria'],
-      combo: 'times colaborativos e contato constante com pessoas'
-    },
-    racionalidade: {
-      title: 'O Analista',
-      desc: 'Você pensa antes de agir, e pensa bem. Fatos, lógica e clareza guiam suas escolhas, e é por isso que as pessoas confiam no seu julgamento. Sua força é a mente que separa o essencial do ruído.',
-      careerIntro: 'Você se destaca em carreiras que exigem lógica, análise e precisão:',
-      careers: ['Ciência de Dados', 'Tecnologia e Engenharia de Software', 'Direito', 'Pesquisa Científica', 'Economia', 'Medicina e Diagnóstico'],
-      combo: 'problemas complexos que pedem análise profunda'
-    },
-    ambicao: {
-      title: 'O Conquistador',
-      desc: 'Você não veio para ficar no mesmo lugar. Metas grandes não te assustam: te acendem. Sua força é a coragem de mirar alto e a determinação de chegar lá.',
-      careerIntro: 'Você cresce em carreiras de alto desempenho, onde ousadia é recompensada:',
-      careers: ['Empreendedorismo', 'Liderança Executiva', 'Mercado Financeiro', 'Consultoria Estratégica', 'Vendas de Alta Performance', 'Desenvolvimento de Negócios'],
-      combo: 'desafios grandes, autonomia e espaço para crescer rápido'
-    },
-    empatia: {
-      title: 'O Acolhedor',
-      desc: 'Você sente o mundo com profundidade e percebe o que os outros nem disseram. Cuidar, ouvir e acolher são a sua linguagem. Sua força é o coração que faz as pessoas se sentirem vistas.',
-      careerIntro: 'Você se realiza em carreiras dedicadas a cuidar e transformar vidas:',
-      careers: ['Psicologia e Terapias', 'Saúde e Enfermagem', 'Educação e Pedagogia', 'Serviço Social', 'Recursos Humanos', 'Bem-estar e Estética'],
-      combo: 'propósito humano e cuidado genuíno com as pessoas'
-    }
-  };
-
-  // 40 perguntas: 15 pares de traços × 2 + 10 extras; a % de cada traço é normalizada
-  // pelo próprio teto (max[t]), então os traços seguem comparáveis entre si.
-  var QUESTIONS = [
-    // ---- Página 1 ----
-    { text: 'Diante de um projeto novo, você é mais de…',
-      a: { label: 'Planejar tudo com antecedência', traits: ['disciplina'] },
-      b: { label: 'Improvisar conforme as coisas acontecem', traits: ['criatividade'] } },
-    { text: 'Numa noite livre, você prefere…',
-      a: { label: 'Adiantar tarefas e organizar a semana', traits: ['disciplina'] },
-      b: { label: 'Sair para conversar com amigos', traits: ['sociabilidade'] } },
-    { text: 'Para tomar uma decisão importante, você…',
-      a: { label: 'Confia na intuição e no que sente', traits: ['criatividade'] },
-      b: { label: 'Analisa dados, prós e contras', traits: ['racionalidade'] } },
-    { text: 'Sucesso, para você, é mais…',
-      a: { label: 'Ter pessoas queridas por perto', traits: ['sociabilidade'] },
-      b: { label: 'Chegar aonde poucos chegam', traits: ['ambicao'] } },
-    { text: 'Num conflito entre amigos, você busca…',
-      a: { label: 'Entender quem tem razão', traits: ['racionalidade'] },
-      b: { label: 'Entender como cada um se sente', traits: ['empatia'] } },
-    { text: 'Quando pensa no futuro, você quer mais…',
-      a: { label: 'Deixar uma marca no mundo', traits: ['ambicao'] },
-      b: { label: 'Fazer diferença na vida de quem ama', traits: ['empatia'] } },
-    { text: 'Suas melhores ideias costumam nascer…',
-      a: { label: 'Sozinho(a), no silêncio', traits: ['criatividade'] },
-      b: { label: 'Trocando com outras pessoas', traits: ['sociabilidade'] } },
-    { text: 'Quando algo perde a graça no meio do caminho, você…',
-      a: { label: 'Reavalia se ainda faz sentido continuar', traits: ['racionalidade'] },
-      b: { label: 'Termina mesmo assim: começou, acaba', traits: ['disciplina'] } },
-    { text: 'No trabalho dos seus sonhos existe mais…',
-      a: { label: 'Clima leve e boas amizades', traits: ['sociabilidade'] },
-      b: { label: 'Desafios que fazem você crescer', traits: ['ambicao'] } },
-    { text: 'Sobre regras, você pensa que…',
-      a: { label: 'Podem abrir exceções para pessoas', traits: ['empatia'] },
-      b: { label: 'Existem para serem seguidas', traits: ['disciplina'] } },
-
-    // ---- Página 2 ----
-    { text: 'Você se realiza mais quando cria algo…',
-      a: { label: 'Original, mesmo que poucos vejam', traits: ['criatividade'] },
-      b: { label: 'Grande, reconhecido por todos', traits: ['ambicao'] } },
-    { text: 'Ao conhecer pessoas, você prefere…',
-      a: { label: 'Se aprofundar em poucas conexões', traits: ['empatia'] },
-      b: { label: 'Circular e conhecer muita gente nova', traits: ['sociabilidade'] } },
-    { text: 'Diante de uma oportunidade arriscada, você…',
-      a: { label: 'Só avança com os riscos calculados', traits: ['racionalidade'] },
-      b: { label: 'Avança primeiro e ajusta no caminho', traits: ['ambicao'] } },
-    { text: 'Você prefere crescer na vida com…',
-      a: { label: 'Apostas grandes que aceleram tudo', traits: ['ambicao'] },
-      b: { label: 'Progresso constante e seguro', traits: ['disciplina'] } },
-    { text: 'Quando alguém te pede um conselho, você…',
-      a: { label: 'Vai direto ao ponto, com soluções práticas', traits: ['racionalidade'] },
-      b: { label: 'Acolhe primeiro, aconselha depois', traits: ['empatia'] } },
-    { text: 'Ao fazer algo, você valoriza mais…',
-      a: { label: 'Métodos que já funcionam', traits: ['disciplina'] },
-      b: { label: 'Inventar o seu próprio jeito', traits: ['criatividade'] } },
-    { text: 'Num grupo novo, você costuma…',
-      a: { label: 'Puxar assunto com todo mundo', traits: ['sociabilidade'] },
-      b: { label: 'Observar antes de falar', traits: ['racionalidade'] } },
-    { text: 'Mergulhado(a) em algo que ama fazer, você…',
-      a: { label: 'Segue atento(a) ao que os outros sentem', traits: ['empatia'] },
-      b: { label: 'Se perde no seu próprio mundo', traits: ['criatividade'] } },
-    { text: 'Quando surge um convite de última hora, você…',
-      a: { label: 'Mantém sua rotina: compromisso é compromisso', traits: ['disciplina'] },
-      b: { label: 'Deixa a rotina de lado por um bom encontro', traits: ['sociabilidade'] } },
-    { text: 'Entre essas duas frases, você fica com…',
-      a: { label: '“Prefiro estar certo(a) a vencer”', traits: ['racionalidade'] },
-      b: { label: '“Prefiro vencer a estar certo(a)”', traits: ['ambicao'] } },
-
-    // ---- Página 3 ----
-    { text: 'Você admira mais quem tem…',
-      a: { label: 'Conquistas que impressionam', traits: ['ambicao'] },
-      b: { label: 'Consistência no dia a dia', traits: ['disciplina'] } },
-    { text: 'Uma ideia te conquista quando é…',
-      a: { label: 'Ousada, mesmo sem garantia de dar certo', traits: ['criatividade'] },
-      b: { label: 'Comprovada, mesmo que seja comum', traits: ['racionalidade'] } },
-    { text: 'Numa tarde inteira só sua, você…',
-      a: { label: 'Cria algo: escreve, desenha, monta, inventa', traits: ['criatividade'] },
-      b: { label: 'Chama alguém: a tarde fica melhor em companhia', traits: ['sociabilidade'] } },
-    { text: 'Quando alguém não entrega o combinado, você…',
-      a: { label: 'Flexibiliza: às vezes a vida aperta', traits: ['empatia'] },
-      b: { label: 'Reforça o combinado: prazos importam', traits: ['disciplina'] } },
-    { text: 'Entre o caminho e a chegada, o que pesa mais é…',
-      a: { label: 'O resultado: é ele que conta no final', traits: ['ambicao'] },
-      b: { label: 'O processo: criar já é a recompensa', traits: ['criatividade'] } },
-    { text: 'Você decide melhor…',
-      a: { label: 'Conversando e ouvindo opiniões', traits: ['sociabilidade'] },
-      b: { label: 'Analisando sozinho(a), com calma', traits: ['racionalidade'] } },
-    { text: 'Com prazos apertados, você…',
-      a: { label: 'Entrega no prazo, custe o que custar', traits: ['disciplina'] },
-      b: { label: 'Prefere atrasar um pouco e decidir certo', traits: ['racionalidade'] } },
-    { text: 'Nas rodas de amigos, você é mais…',
-      a: { label: 'A energia da festa', traits: ['sociabilidade'] },
-      b: { label: 'O ombro das conversas difíceis', traits: ['empatia'] } },
-    { text: 'Ao expressar uma opinião forte, você…',
-      a: { label: 'Escolhe as palavras pensando em quem ouve', traits: ['empatia'] },
-      b: { label: 'É 100% autêntico(a), do seu jeito', traits: ['criatividade'] } },
-    { text: 'Se precisar escolher, você abre mão de…',
-      a: { label: 'Tempo livre, para investir nos seus objetivos', traits: ['ambicao'] },
-      b: { label: 'Alguns objetivos, para viver bons momentos com quem importa', traits: ['empatia'] } },
-
-    // ---- Página 4 ----
-    { text: 'Sua mesa (ou seu quarto) costuma estar…',
-      a: { label: 'Organizado: cada coisa no seu lugar', traits: ['disciplina'] },
-      b: { label: 'Um caos criativo que só você entende', traits: ['criatividade'] } },
-    { text: 'Num jogo ou competição, o que te motiva mais é…',
-      a: { label: 'Vencer e ficar em primeiro lugar', traits: ['ambicao'] },
-      b: { label: 'Jogar bem e evoluir a cada partida', traits: ['disciplina'] } },
-    { text: 'Antes de uma viagem, você…',
-      a: { label: 'Monta roteiro dia a dia, com horários', traits: ['disciplina'] },
-      b: { label: 'Pesquisa bem o destino e decide por lá', traits: ['racionalidade'] } },
-    { text: 'Se ganhasse um ano livre, você usaria para…',
-      a: { label: 'Criar um projeto seu, do zero', traits: ['criatividade'] },
-      b: { label: 'Acelerar sua carreira ou negócio', traits: ['ambicao'] } },
-    { text: 'Numa festa, você é quem…',
-      a: { label: 'Conversa com todo mundo e apresenta pessoas', traits: ['sociabilidade'] },
-      b: { label: 'Inventa a brincadeira ou o tema da noite', traits: ['criatividade'] } },
-    { text: 'Um bom presente para você dar é algo…',
-      a: { label: 'Feito por você, único no mundo', traits: ['criatividade'] },
-      b: { label: 'Que a pessoa comentou que precisava', traits: ['empatia'] } },
-    { text: 'Nas redes sociais, você prefere…',
-      a: { label: 'Mostrar suas conquistas e projetos', traits: ['ambicao'] },
-      b: { label: 'Interagir e acompanhar os amigos', traits: ['sociabilidade'] } },
-    { text: 'Ao aprender algo novo, funciona melhor para você…',
-      a: { label: 'Em grupo, trocando ideias', traits: ['sociabilidade'] },
-      b: { label: 'Sozinho(a), estudando a fundo', traits: ['racionalidade'] } },
-    { text: 'Um amigo te conta um problema. Sua primeira reação é…',
-      a: { label: 'Ajudar a entender a causa e resolver', traits: ['racionalidade'] },
-      b: { label: 'Ouvir com atenção e ficar do lado dele', traits: ['empatia'] } },
-    { text: 'Você se sente mais realizado(a) quando…',
-      a: { label: 'Ajuda alguém a superar algo difícil', traits: ['empatia'] },
-      b: { label: 'Bate uma meta que parecia impossível', traits: ['ambicao'] } }
+  var AVULSOS = [
+    { id: "limpeza", nome: "Limpeza de pele profunda", preco: 100 },
+    { id: "peeling-quimico", nome: "Peeling químico", preco: 140 },
+    { id: "peeling-fisico", nome: "Peeling físico", preco: 120 },
+    { id: "sobrancelha", nome: "Design de sobrancelhas", preco: 50 },
+    { id: "microagulhamento-facial", nome: "Microagulhamento facial", preco: 160 },
+    { id: "microagulhamento-labial", nome: "Microagulhamento labial", preco: 70 }
   ];
 
-  var PER_PAGE = 10;
-  var TOTAL_PAGES = QUESTIONS.length / PER_PAGE; // 3
+  var RITUAIS = [
+    {
+      id: "essencial", nome: "Ritual Essencial", preco: 240, precoOriginal: 290,
+      descricao: "O primeiro passo para renovar sua pele com cuidado completo.",
+      inclui: ["limpeza", "sobrancelha", "peeling-quimico"],
+      destaque: false
+    },
+    {
+      id: "renovar", nome: "Ritual Renovar", preco: 420, precoOriginal: 450,
+      descricao: "Aprofunda a renovação da pele com microagulhamento facial.",
+      inclui: ["limpeza", "sobrancelha", "peeling-quimico", "microagulhamento-facial"],
+      destaque: false
+    },
+    {
+      id: "completo", nome: "Ritual Completo", preco: 540, precoOriginal: 640,
+      descricao: "A experiência VITABLOOM por completo, dos pés à cabeça.",
+      inclui: ["limpeza", "sobrancelha", "peeling-quimico", "peeling-fisico", "microagulhamento-facial", "microagulhamento-labial"],
+      destaque: true
+    }
+  ];
 
-  // Estado em memória (sem localStorage)
+  var fmt = function (n) { return "R$ " + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."); };
+  var avulsoById = function (id) { return AVULSOS.filter(function (a) { return a.id === id; })[0]; };
+
   var state = {
-    started: false,                             // tela inicial → teste
-    user: { name: '', email: '', phone: '' },
-    emailSent: false,                           // evita reenvio ao redesenhar o resultado
-    page: 0,                                    // 0..3 = perguntas, 4 = resultado
-    answers: new Array(QUESTIONS.length).fill(null) // 'a' | 'b' | null
+    pricingTab: "estetica",
+    tipoAtendimento: "estetica",
+    avulsosOpen: false,
+    rituaisOpen: false,
+    selectedAvulsos: [],
+    selectedRitual: null,
+    bookings: []
   };
 
-  var app = document.getElementById('app');
-
-  function pageAnswered(page) {
-    for (var i = page * PER_PAGE; i < (page + 1) * PER_PAGE; i++) {
-      if (state.answers[i] === null) return false;
-    }
-    return true;
+  function loadBookings() {
+    try {
+      var raw = localStorage.getItem("vitabloom_bookings");
+      state.bookings = raw ? JSON.parse(raw) : [];
+    } catch (e) { state.bookings = []; }
+  }
+  function saveBookings() {
+    try { localStorage.setItem("vitabloom_bookings", JSON.stringify(state.bookings)); } catch (e) {}
   }
 
-  function countAnswered(page) {
-    var n = 0;
-    for (var i = page * PER_PAGE; i < (page + 1) * PER_PAGE; i++) {
-      if (state.answers[i] !== null) n++;
-    }
-    return n;
-  }
-
-  function computeScores() {
-    var scores = {}, max = {};
-    Object.keys(TRAITS).forEach(function (t) { scores[t] = 0; max[t] = 0; });
-    QUESTIONS.forEach(function (q, i) {
-      q.a.traits.forEach(function (t) { max[t]++; });
-      q.b.traits.forEach(function (t) { max[t]++; });
-      var choice = state.answers[i];
-      if (choice) {
-        q[choice].traits.forEach(function (t) { scores[t]++; });
-      }
-    });
-    return Object.keys(TRAITS).map(function (t) {
-      return {
-        key: t,
-        label: TRAITS[t].label,
-        pct: max[t] ? Math.round((scores[t] / max[t]) * 100) : 0,
-        rand: Math.random() // desempate aleatório: sem ele, empates sempre caíam na Disciplina (primeira da lista)
-      };
-    }).sort(function (x, y) { return (y.pct - x.pct) || (y.rand - x.rand); });
-  }
-
-  function render() {
-    if (!state.started) {
-      renderIntro();
-    } else if (state.page >= TOTAL_PAGES) {
-      renderResult();
-    } else {
-      renderPage();
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ---------- Tela inicial ----------
-  function maskPhone(digits) {
-    digits = digits.replace(/\D/g, '').slice(0, 11);
-    if (digits.length === 0) return '';
-    if (digits.length <= 2) return '(' + digits;
-    if (digits.length <= 6) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
-    if (digits.length <= 10) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 6) + '-' + digits.slice(6);
-    return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
-  }
-
-  function introValid() {
-    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(state.user.email.trim());
-    var phoneOk = state.user.phone.replace(/\D/g, '').length >= 10;
-    var nameOk = state.user.name.trim().length >= 2;
-    return nameOk && emailOk && phoneOk;
-  }
-
-  function renderIntro() {
-    app.innerHTML =
-      '<div class="intro">' +
-        '<div class="eyebrow">Antes de começar</div>' +
-        '<h2>Vamos nos conhecer?</h2>' +
-        '<div class="intro-sub">Preencha seus dados para iniciar o teste. São ' + QUESTIONS.length + ' perguntas rápidas, leva menos de 5 minutos.</div>' +
-        '<div class="field">' +
-          '<label for="intro-name">Nome</label>' +
-          '<input type="text" id="intro-name" placeholder="Como podemos te chamar?" autocomplete="name" value="' + state.user.name.replace(/"/g, '&quot;') + '">' +
-        '</div>' +
-        '<div class="field">' +
-          '<label for="intro-email">E-mail</label>' +
-          '<input type="email" id="intro-email" placeholder="seu@email.com" autocomplete="email" inputmode="email" value="' + state.user.email.replace(/"/g, '&quot;') + '">' +
-        '</div>' +
-        '<div class="field">' +
-          '<label for="intro-phone">WhatsApp</label>' +
-          '<input type="tel" id="intro-phone" placeholder="(00) 00000-0000" autocomplete="tel" inputmode="numeric" maxlength="16" value="' + state.user.phone + '">' +
-        '</div>' +
-        '<div class="actions">' +
-          '<button type="button" class="btn" id="start"' + (introValid() ? '' : ' disabled') + '>Começar o teste ✿</button>' +
-          '<div class="hint" id="intro-hint"' + (introValid() ? ' style="display:none"' : '') + '>Preencha nome, e-mail válido e WhatsApp para começar</div>' +
-        '</div>' +
-      '</div>';
-
-    var nameEl = document.getElementById('intro-name');
-    var emailEl = document.getElementById('intro-email');
-    var phoneEl = document.getElementById('intro-phone');
-
-    function sync() {
-      state.user.name = nameEl.value;
-      state.user.email = emailEl.value;
-      state.user.phone = phoneEl.value;
-      var ok = introValid();
-      document.getElementById('start').disabled = !ok;
-      document.getElementById('intro-hint').style.display = ok ? 'none' : '';
-    }
-
-    nameEl.addEventListener('input', sync);
-    emailEl.addEventListener('input', sync);
-    phoneEl.addEventListener('input', function () {
-      phoneEl.value = maskPhone(phoneEl.value);
-      sync();
-    });
-    document.getElementById('start').addEventListener('click', function () {
-      if (introValid()) {
-        state.started = true;
-        render();
-      }
+  // ---------- Pricing table (#precos) ----------
+  function renderAvulsosPrecos() {
+    var box = document.getElementById("avulsosBoxPrecos");
+    box.innerHTML = "";
+    AVULSOS.forEach(function (s) {
+      var row = document.createElement("button");
+      row.type = "button";
+      row.className = "avulso-row";
+      row.innerHTML =
+        '<span class="avulso-ico">✿</span>' +
+        '<span class="avulso-name">' + s.nome + '</span>' +
+        '<span class="avulso-price">' + fmt(s.preco) + '</span>' +
+        '<span class="avulso-cta">Agendar →</span>';
+      row.addEventListener("click", function () { pickAvulsoFromPrecos(s.id); });
+      box.appendChild(row);
     });
   }
 
-  function renderPage() {
-    var page = state.page;
-    var isLast = page === TOTAL_PAGES - 1;
-    var done = pageAnswered(page);
-    var answered = countAnswered(page);
-    var pctFill = ((page + 1) / TOTAL_PAGES) * 100;
-
-    var html =
-      '<div class="progress">' +
-        '<div class="progress-label">' +
-          '<span>Página ' + (page + 1) + ' de ' + TOTAL_PAGES + '</span>' +
-          '<span>' + answered + '/' + PER_PAGE + ' respondidas</span>' +
-        '</div>' +
-        '<div class="progress-track"><div class="progress-fill" style="width:' + pctFill + '%"></div></div>' +
-      '</div>' +
-      '<div class="page" id="page-' + page + '">';
-
-    for (var i = page * PER_PAGE; i < (page + 1) * PER_PAGE; i++) {
-      var q = QUESTIONS[i];
-      var sel = state.answers[i];
-      html +=
-        '<div class="q-card">' +
-          '<div class="q-num">Pergunta ' + (i + 1) + ' de ' + QUESTIONS.length + '</div>' +
-          '<div class="q-text">' + q.text + '</div>' +
-          '<div class="options">' +
-            '<button type="button" class="opt' + (sel === 'a' ? ' selected' : '') + '" data-q="' + i + '" data-c="a">' +
-              '<span class="dot"></span><span>' + q.a.label + '</span></button>' +
-            '<div class="ou">ou</div>' +
-            '<button type="button" class="opt' + (sel === 'b' ? ' selected' : '') + '" data-q="' + i + '" data-c="b">' +
-              '<span class="dot"></span><span>' + q.b.label + '</span></button>' +
-          '</div>' +
-        '</div>';
-    }
-
-    html +=
-        '<div class="actions">' +
-          '<button type="button" class="btn' + (isLast ? ' btn-rose' : '') + '" id="next"' + (done ? '' : ' disabled') + '>' +
-            (isLast ? 'Ver resultado ✿' : 'Próximo →') +
-          '</button>' +
-          (done ? '' : '<div class="hint">Responda as ' + PER_PAGE + ' perguntas para continuar</div>') +
-        '</div>' +
-      '</div>';
-
-    app.innerHTML = html;
-
-    app.querySelectorAll('.opt').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var qi = parseInt(btn.dataset.q, 10);
-        state.answers[qi] = btn.dataset.c;
-        updatePageUI(qi);
-      });
-    });
-    document.getElementById('next').addEventListener('click', function () {
-      if (pageAnswered(state.page)) {
-        state.page++;
-        render();
-      }
+  function renderRituaisPrecos() {
+    var row = document.getElementById("rituaisRowPrecos");
+    row.innerHTML = "";
+    RITUAIS.forEach(function (r) {
+      var card = document.createElement("div");
+      card.className = "ritual-card" + (r.destaque ? " destaque" : "");
+      var economia = r.precoOriginal - r.preco;
+      var itensHtml = r.inclui.map(function (id) {
+        var a = avulsoById(id);
+        return "<li>" + a.nome + "</li>";
+      }).join("");
+      card.innerHTML =
+        (r.destaque ? '<span class="ritual-badge">Mais vantajoso</span>' : "") +
+        "<h3>" + r.nome + "</h3>" +
+        '<p class="ritual-desc">' + r.descricao + "</p>" +
+        '<ul class="ritual-list">' + itensHtml + "</ul>" +
+        '<div class="ritual-price-row">' +
+          '<span class="ritual-price-old">' + fmt(r.precoOriginal) + "</span>" +
+          '<span class="ritual-price">' + fmt(r.preco) + "</span>" +
+        "</div>" +
+        '<span class="ritual-save">Economia de ' + fmt(economia) + "</span>";
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = r.destaque ? "btn btn-rose" : "btn btn-outline";
+      btn.textContent = "Quero este ritual";
+      btn.addEventListener("click", function () { pickRitualFromPrecos(r.id); });
+      card.appendChild(btn);
+      row.appendChild(card);
     });
   }
 
-  // Atualiza seleção, contador e botão sem redesenhar a página (evita "pulos" de scroll)
-  function updatePageUI(qi) {
-    app.querySelectorAll('.opt[data-q="' + qi + '"]').forEach(function (b) {
-      b.classList.toggle('selected', b.dataset.c === state.answers[qi]);
+  function setPricingTab(tab) {
+    state.pricingTab = tab;
+    document.getElementById("tabBtnEstetica").setAttribute("data-active", tab === "estetica" ? "true" : "false");
+    document.getElementById("tabBtnAuto").setAttribute("data-active", tab === "auto" ? "true" : "false");
+    document.getElementById("tabEstetica").hidden = tab !== "estetica";
+    document.getElementById("tabAuto").hidden = tab !== "auto";
+  }
+
+  function gotoPrecos() {
+    setPricingTab("estetica");
+    document.getElementById("precos").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function gotoAuto() {
+    setPricingTab("auto");
+    document.getElementById("precos").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function pickAvulsoFromPrecos(id) {
+    setTipo("estetica");
+    if (state.selectedAvulsos.indexOf(id) === -1) state.selectedAvulsos.push(id);
+    state.avulsosOpen = true;
+    renderForm();
+    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function pickRitualFromPrecos(id) {
+    setTipo("estetica");
+    state.selectedRitual = id;
+    state.rituaisOpen = true;
+    renderForm();
+    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---------- Booking form ----------
+  function setTipo(tipo) {
+    state.tipoAtendimento = tipo;
+    document.getElementById("pillEstetica").setAttribute("data-active", tipo === "estetica" ? "true" : "false");
+    document.getElementById("pillAuto").setAttribute("data-active", tipo === "auto" ? "true" : "false");
+    document.getElementById("servicesField").hidden = tipo !== "estetica";
+  }
+
+  function toggleAvulso(id) {
+    var idx = state.selectedAvulsos.indexOf(id);
+    if (idx === -1) state.selectedAvulsos.push(id);
+    else state.selectedAvulsos.splice(idx, 1);
+    renderForm();
+  }
+
+  function selectRitual(id) {
+    state.selectedRitual = state.selectedRitual === id ? null : id;
+    renderForm();
+  }
+
+  function toggleAccordion(which) {
+    if (which === "avulsos") state.avulsosOpen = !state.avulsosOpen;
+    else state.rituaisOpen = !state.rituaisOpen;
+    renderForm();
+  }
+
+  function renderAvulsoOpts() {
+    var panel = document.getElementById("panelAvulsos");
+    panel.innerHTML = "";
+    AVULSOS.forEach(function (a) {
+      var checked = state.selectedAvulsos.indexOf(a.id) !== -1;
+      var row = document.createElement("div");
+      row.className = "opt-row";
+      row.innerHTML =
+        '<span class="opt-box checkbox' + (checked ? " checked" : "") + '">' + (checked ? "✓" : "") + "</span>" +
+        '<span class="opt-name">' + a.nome + "</span>" +
+        '<span class="opt-price">' + fmt(a.preco) + "</span>";
+      row.addEventListener("click", function () { toggleAvulso(a.id); });
+      panel.appendChild(row);
     });
-    var page = state.page;
-    var done = pageAnswered(page);
-    var next = document.getElementById('next');
-    next.disabled = !done;
-    var hint = app.querySelector('.hint');
-    if (done && hint) hint.remove();
-    var counter = app.querySelector('.progress-label span:last-child');
-    if (counter) counter.textContent = countAnswered(page) + '/' + PER_PAGE + ' respondidas';
   }
 
-  function textoResultado(scores, profile) {
-    return 'Perfil dominante: ' + profile.title + '\n\n' +
-      scores.map(function (s) { return s.label + ': ' + s.pct + '%'; }).join('\n') +
-      '\n\nÁreas de carreira: ' + profile.careers.join(', ');
+  function renderRitualOpts() {
+    var panel = document.getElementById("panelRituais");
+    panel.innerHTML = "";
+    RITUAIS.forEach(function (r) {
+      var checked = state.selectedRitual === r.id;
+      var row = document.createElement("div");
+      row.className = "opt-row";
+      row.innerHTML =
+        '<span class="opt-box radio ritual' + (checked ? " checked" : "") + '">' + (checked ? "●" : "") + "</span>" +
+        '<span class="opt-name">' + r.nome + "</span>" +
+        '<span class="opt-price">' + fmt(r.preco) + "</span>";
+      row.addEventListener("click", function () { selectRitual(r.id); });
+      panel.appendChild(row);
+    });
   }
 
-  function enviarEmails(scores, profile) {
-    var statusEl = document.getElementById('send-status');
-    if (!emailjsPronto || !statusEl) return;
-    if (state.emailSent) {
-      statusEl.className = 'send-status ok';
-      statusEl.textContent = '✓ Cópia enviada para ' + state.user.email.trim();
+  function renderForm() {
+    renderAvulsoOpts();
+    renderRitualOpts();
+
+    var avulsosCount = state.selectedAvulsos.length;
+    var ritualCount = state.selectedRitual ? 1 : 0;
+
+    var avulsosBadge = document.getElementById("avulsosCountBadge");
+    avulsosBadge.hidden = avulsosCount === 0;
+    avulsosBadge.textContent = avulsosCount;
+
+    var ritualBadge = document.getElementById("ritualCountBadge");
+    ritualBadge.hidden = ritualCount === 0;
+
+    document.getElementById("panelAvulsos").classList.toggle("open", state.avulsosOpen);
+    document.getElementById("panelRituais").classList.toggle("open", state.rituaisOpen);
+    document.getElementById("chevronAvulsos").classList.toggle("open", state.avulsosOpen);
+    document.getElementById("chevronRituais").classList.toggle("open", state.rituaisOpen);
+  }
+
+  function showError(msg) {
+    var el = document.getElementById("errorMsg");
+    if (!msg) { el.hidden = true; el.textContent = ""; return; }
+    el.hidden = false;
+    el.textContent = msg;
+  }
+
+  function firstName(full) {
+    return (full || "").trim().split(/\s+/)[0] || "";
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    var date = document.getElementById("fDate").value;
+    var time = document.getElementById("fTime").value;
+    var name = document.getElementById("fName").value.trim();
+    var phone = document.getElementById("fPhone").value.trim();
+    var email = document.getElementById("fEmail").value.trim();
+
+    if (!date || !time || !name || !phone || !email) {
+      showError("Por favor, preencha todos os campos para confirmar seu agendamento.");
       return;
     }
-    statusEl.className = 'send-status ok';
-    statusEl.textContent = 'Enviando uma cópia para seu e-mail…';
-    var params = {
-      nome: state.user.name.trim(),
-      email: state.user.email.trim(),
-      telefone: state.user.phone,
-      perfil: profile.title,
-      resultado: textoResultado(scores, profile)
-    };
-    emailjs.send(EMAILJS.serviceId, EMAILJS.templateUser, params).then(function () {
-      state.emailSent = true;
-      statusEl.textContent = '✓ Cópia enviada para ' + state.user.email.trim();
-    }, function () {
-      statusEl.className = 'send-status err';
-      statusEl.textContent = 'Não foi possível enviar o e-mail agora, mas seu resultado está aqui na tela.';
-    });
-    if (EMAILJS.templateAdmin) {
-      emailjs.send(EMAILJS.serviceId, EMAILJS.templateAdmin, params)
-        .catch(function () { /* cópia interna; não afeta a experiência da pessoa */ });
+    if (state.tipoAtendimento === "estetica" && state.selectedAvulsos.length === 0 && !state.selectedRitual) {
+      showError("Escolha ao menos um serviço avulso ou um ritual.");
+      return;
     }
+    showError(null);
+
+    var booking = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      tipo: state.tipoAtendimento,
+      date: date,
+      time: time,
+      avulsos: state.selectedAvulsos.slice(),
+      ritual: state.selectedRitual,
+      name: name,
+      phone: phone,
+      email: email,
+      createdAt: new Date().toISOString()
+    };
+    state.bookings.unshift(booking);
+    saveBookings();
+    renderAdmin();
+
+    document.getElementById("confirmName").textContent = firstName(name);
+    document.getElementById("bookingForm").hidden = true;
+    document.getElementById("confirmState").hidden = false;
   }
 
-  function renderResult() {
-    var scores = computeScores();
-    var top = scores[0];
-    var profile = PROFILES[top.key];
+  function resetForm() {
+    document.getElementById("bookingForm").reset();
+    state.selectedAvulsos = [];
+    state.selectedRitual = null;
+    state.avulsosOpen = false;
+    state.rituaisOpen = false;
+    setTipo("estetica");
+    showError(null);
+    renderForm();
+    document.getElementById("confirmState").hidden = true;
+    document.getElementById("bookingForm").hidden = false;
+    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
-    var html =
-      '<div class="progress">' +
-        '<div class="progress-label"><span>Teste concluído</span><span>' + QUESTIONS.length + '/' + QUESTIONS.length + '</span></div>' +
-        '<div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>' +
-      '</div>' +
-      '<div class="result">' +
-        '<div class="result-hero">' +
-          '<div class="eyebrow">' + (state.user.name.trim() ? state.user.name.trim().split(/\s+/)[0] + ', seu' : 'Seu') + ' perfil dominante é</div>' +
-          '<h2>' + profile.title + '</h2>' +
-          '<div class="desc">' + profile.desc + '</div>' +
-        '</div>' +
-        '<div class="career">' +
-          '<div class="eyebrow">Carreira</div>' +
-          '<h3>Onde você floresce profissionalmente</h3>' +
-          '<div class="career-intro">' + profile.careerIntro + '</div>' +
-          '<div class="career-pills">' +
-            profile.careers.map(function (c) { return '<span class="career-pill">✿ ' + c + '</span>'; }).join('') +
-          '</div>' +
-          '<div class="career-note">Sua ' + scores[1].label + ' também fala alto: valorize ' + PROFILES[scores[1].key].combo + '.</div>' +
-        '</div>' +
-        '<div class="traits">' +
-          '<h3>Como seus traços floresceram</h3>';
+  // ---------- Admin ----------
+  function bookingLabel(b) {
+    if (b.ritual) {
+      var r = RITUAIS.filter(function (x) { return x.id === b.ritual; })[0];
+      return r ? r.nome : b.ritual;
+    }
+    if (b.avulsos && b.avulsos.length) {
+      return b.avulsos.map(function (id) {
+        var a = avulsoById(id);
+        return a ? a.nome : id;
+      }).join(", ");
+    }
+    return "Autoconhecimento";
+  }
 
-    scores.forEach(function (s, idx) {
-      var isTop = idx === 0;
-      html +=
-        '<div class="trait-row' + (isTop ? ' top' : '') + '">' +
-          '<div class="trait-head">' +
-            '<span class="trait-name">' + s.label + (isTop ? '<span class="top-badge">dominante</span>' : '') + '</span>' +
-            '<span class="trait-pct">' + s.pct + '%</span>' +
-          '</div>' +
-          '<div class="trait-track">' +
-            '<div class="trait-bar" style="width:' + s.pct + '%; animation-delay:' + (idx * 0.12) + 's"></div>' +
-          '</div>' +
-        '</div>';
-    });
-
-    var primeiroNome = state.user.name.trim().split(/\s+/)[0] || '';
-    var linkDevolutiva = 'devolutiva.html?nome=' + encodeURIComponent(state.user.name.trim()) +
-      '&perfil=' + encodeURIComponent(profile.title);
-
-    html +=
-        '</div>' +
-        '<div class="cta">' +
-          '<div class="eyebrow">Próximo passo</div>' +
-          '<h3>' + (primeiroNome ? primeiroNome + ', quer' : 'Quer') + ' transformar esse resultado em um plano?</h3>' +
-          '<p>Conhecer seu perfil é só o começo. Na <strong>devolutiva personalizada</strong>, você descobre como usar a força de <strong>' + profile.title + '</strong> para vencer seus obstáculos e chegar aonde quer na sua vida profissional.</p>' +
-          '<a class="btn btn-rose" href="' + linkDevolutiva + '">Quero minha devolutiva ✿</a>' +
-        '</div>' +
-        (emailjsPronto ? '<div style="text-align:center"><span class="send-status" id="send-status"></span></div>' : '') +
-        '<div class="actions">' +
-          '<button type="button" class="btn btn-outline" id="restart">Refazer o teste</button>' +
-        '</div>' +
-      '</div>';
-
-    app.innerHTML = html;
-    enviarEmails(scores, profile);
-
-    document.getElementById('restart').addEventListener('click', function () {
-      state.page = 0;
-      state.answers = new Array(QUESTIONS.length).fill(null);
-      state.emailSent = false;
-      render();
+  function renderAdmin() {
+    document.getElementById("modalCount").textContent = state.bookings.length + (state.bookings.length === 1 ? " agendamento" : " agendamentos");
+    var list = document.getElementById("modalList");
+    list.innerHTML = "";
+    if (state.bookings.length === 0) {
+      list.innerHTML = '<div class="empty-admin">Nenhum agendamento ainda.</div>';
+      return;
+    }
+    state.bookings.forEach(function (b) {
+      var item = document.createElement("div");
+      item.className = "booking-item";
+      item.innerHTML =
+        '<div class="booking-top">' +
+          '<span class="booking-type-badge ' + (b.tipo === "estetica" ? "estetica" : "auto") + '">' +
+            (b.tipo === "estetica" ? "Estética" : "Autoconhecimento") +
+          "</span>" +
+          '<span class="booking-name">' + b.name + "</span>" +
+        "</div>" +
+        '<div class="booking-meta">' + b.date + " às " + b.time + " · " + bookingLabel(b) + "</div>" +
+        '<div class="booking-meta">' + b.phone + " · " + b.email + "</div>";
+      var removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "booking-remove";
+      removeBtn.textContent = "Remover";
+      removeBtn.addEventListener("click", function () { removeBooking(b.id); });
+      item.appendChild(removeBtn);
+      list.appendChild(item);
     });
   }
 
-  render();
+  function removeBooking(id) {
+    state.bookings = state.bookings.filter(function (b) { return b.id !== id; });
+    saveBookings();
+    renderAdmin();
+  }
+
+  function openAdmin() { document.getElementById("adminOverlay").hidden = false; }
+  function closeAdmin() { document.getElementById("adminOverlay").hidden = true; }
+
+  // ---------- Wiring ----------
+  document.getElementById("fDate").min = new Date().toISOString().slice(0, 10);
+
+  document.getElementById("tabBtnEstetica").addEventListener("click", function () { setPricingTab("estetica"); });
+  document.getElementById("tabBtnAuto").addEventListener("click", function () { setPricingTab("auto"); });
+
+  document.getElementById("btnHeroAgendar").addEventListener("click", gotoPrecos);
+  document.getElementById("btnCardEstetica").addEventListener("click", gotoPrecos);
+  document.getElementById("btnCardAuto").addEventListener("click", gotoAuto);
+  document.getElementById("btnAutoTabAgendar").addEventListener("click", function () {
+    setTipo("auto");
+    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  document.getElementById("pillEstetica").addEventListener("click", function () { setTipo("estetica"); });
+  document.getElementById("pillAuto").addEventListener("click", function () { setTipo("auto"); });
+
+  document.getElementById("accHeadAvulsos").addEventListener("click", function () { toggleAccordion("avulsos"); });
+  document.getElementById("accHeadRituais").addEventListener("click", function () { toggleAccordion("rituais"); });
+
+  document.getElementById("bookingForm").addEventListener("submit", handleSubmit);
+  document.getElementById("btnReset").addEventListener("click", resetForm);
+
+  document.getElementById("btnOpenAdmin").addEventListener("click", openAdmin);
+  document.getElementById("btnCloseAdmin").addEventListener("click", closeAdmin);
+  document.getElementById("adminOverlay").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("adminOverlay")) closeAdmin();
+  });
+
+  loadBookings();
+  renderAvulsosPrecos();
+  renderRituaisPrecos();
+  renderForm();
+  renderAdmin();
 })();
 </script>
 </body>
