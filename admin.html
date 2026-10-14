@@ -185,6 +185,12 @@
   .bk-actions .select { width: auto; min-width: 150px; }
   .bk-notes label { font-size: 11.5px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sage-soft); display: block; margin-bottom: 6px; }
   .bk-saved { font-size: 12px; color: var(--sage-dark); margin-top: 4px; min-height: 18px; }
+  dialog.dlg { border: none; border-radius: 20px; padding: 26px; width: min(92vw, 420px); box-shadow: 0 24px 70px rgba(74,74,66,.35); color: var(--text); }
+  dialog.dlg::backdrop { background: rgba(74,74,66,.45); }
+  .dlg h3 { font-size: 24px; margin-bottom: 8px; }
+  .dlg p { font-size: 14.5px; color: var(--text-2); margin-bottom: 16px; overflow-wrap: anywhere; }
+  .dlg input { width: 100%; padding: 12px 14px; min-height: 44px; border: 1.5px solid rgba(168,181,160,.5); border-radius: 12px; font-size: 16px; font-family: 'Open Sans', sans-serif; margin-bottom: 16px; }
+  .dlg-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
   .empty { text-align: center; padding: 40px 10px; color: var(--text-3); }
   .loading { text-align: center; padding: 30px; color: var(--text-3); }
 </style>
@@ -266,6 +272,18 @@
     </section>
   </main>
 </div>
+
+<dialog class="dlg" id="dlg">
+  <form method="dialog" id="dlgForm">
+    <h3 id="dlgTitle"></h3>
+    <p id="dlgText"></p>
+    <input type="text" id="dlgInput" inputmode="decimal" autocomplete="off" hidden>
+    <div class="dlg-actions">
+      <button class="btn btn-outline" type="button" id="dlgCancel">Cancelar</button>
+      <button class="btn btn-sage" type="submit" id="dlgOk">Confirmar</button>
+    </div>
+  </form>
+</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
@@ -582,6 +600,43 @@
     }).join("");
   }
 
+  // Janelas próprias (confirm/prompt do navegador são bloqueados em alguns navegadores e celulares)
+  var dlg = $("dlg");
+  function openDialog(opts) {
+    return new Promise(function (resolve) {
+      $("dlgTitle").textContent = opts.title;
+      $("dlgText").textContent = opts.text || "";
+      var input = $("dlgInput");
+      input.hidden = !opts.input;
+      input.value = opts.input ? opts.value || "" : "";
+      $("dlgOk").textContent = opts.ok || "Confirmar";
+      $("dlgOk").className = "btn " + (opts.danger ? "btn-rose" : "btn-sage");
+      var done = false;
+      function finish(v) {
+        if (done) return;
+        done = true;
+        $("dlgForm").removeEventListener("submit", onSubmit);
+        $("dlgCancel").removeEventListener("click", onCancel);
+        dlg.removeEventListener("cancel", onCancel);
+        if (dlg.open) dlg.close();
+        resolve(v);
+      }
+      function onSubmit(e) { e.preventDefault(); finish(opts.input ? input.value : true); }
+      function onCancel(e) { if (e && e.preventDefault) e.preventDefault(); finish(opts.input ? null : false); }
+      $("dlgForm").addEventListener("submit", onSubmit);
+      $("dlgCancel").addEventListener("click", onCancel);
+      dlg.addEventListener("cancel", onCancel);
+      dlg.showModal();
+      if (opts.input) { input.focus(); input.select(); }
+    });
+  }
+  function askConfirm(title, text, ok, danger) {
+    return openDialog({ title: title, text: text, ok: ok, danger: danger });
+  }
+  function askAmount(title, text, value) {
+    return openDialog({ title: title, text: text, input: true, value: value, ok: "Marcar como pago" });
+  }
+
   // ---------- Ações ----------
   function findBooking(id) {
     return state.bookings.filter(function (b) { return b.id === id; })[0];
@@ -615,26 +670,35 @@
     if (!b) return;
 
     if (act === "pay") {
-      var ans = window.prompt("Valor recebido (R$):", String(Number(b.total || 0)).replace(".", ","));
-      if (ans === null) return;
-      var val = parseMoney(ans);
-      if (val === null) { fail("Valor inválido. Use apenas números, por exemplo 240 ou 240,50."); return; }
-      update(id, { paid: true, paid_amount: val, paid_at: new Date().toISOString() })
-        .then(function () { setAppMsg(""); render(); })
+      askAmount("Valor recebido", "Quanto " + b.name + " pagou? (valor em R$)", String(Number(b.total || 0)).replace(".", ","))
+        .then(function (ans) {
+          if (ans === null) return;
+          var val = parseMoney(ans);
+          if (val === null) { fail("Valor inválido. Use apenas números, por exemplo 240 ou 240,50."); return; }
+          return update(id, { paid: true, paid_amount: val, paid_at: new Date().toISOString() })
+            .then(function () { setAppMsg(""); render(); });
+        })
         .catch(function () { fail("Não foi possível marcar como pago. Tente novamente."); });
     } else if (act === "unpay") {
-      if (!window.confirm("Desfazer o pagamento de " + b.name + "?")) return;
-      update(id, { paid: false, paid_amount: null, paid_at: null })
-        .then(function () { setAppMsg(""); render(); })
+      askConfirm("Desfazer pagamento", "Desfazer o pagamento de " + b.name + "?", "Desfazer")
+        .then(function (yes) {
+          if (!yes) return;
+          return update(id, { paid: false, paid_amount: null, paid_at: null })
+            .then(function () { setAppMsg(""); render(); });
+        })
         .catch(function () { fail("Não foi possível desfazer o pagamento."); });
     } else if (act === "remove") {
-      if (!window.confirm("Remover o agendamento de " + b.name + "? Esta ação não pode ser desfeita.")) return;
-      sb.from("bookings").delete().eq("id", id).select().then(function (res) {
-        if (res.error || !res.data || !res.data.length) throw new Error("falhou");
-        state.bookings = state.bookings.filter(function (x) { return x.id !== id; });
-        setAppMsg("");
-        render();
-      }).catch(function () { fail("Não foi possível remover o agendamento."); });
+      askConfirm("Remover agendamento", "Remover o agendamento de " + b.name + "? Esta ação não pode ser desfeita.", "Remover", true)
+        .then(function (yes) {
+          if (!yes) return;
+          return sb.from("bookings").delete().eq("id", id).select().then(function (res) {
+            if (res.error || !res.data || !res.data.length) throw new Error("falhou");
+            state.bookings = state.bookings.filter(function (x) { return x.id !== id; });
+            setAppMsg("");
+            render();
+          });
+        })
+        .catch(function () { fail("Não foi possível remover o agendamento."); });
     }
   });
 
