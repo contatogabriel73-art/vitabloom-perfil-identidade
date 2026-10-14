@@ -547,67 +547,7 @@
   }
   .admin-trigger:hover { color: #d3d8cd; }
 
-  /* ---------- Admin modal ---------- */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(74,74,66,.45);
-    backdrop-filter: blur(4px);
-    z-index: 90;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    animation: fadeIn .2s ease both;
-  }
-  .modal-box {
-    background: #fff;
-    border-radius: 20px;
-    max-width: 640px;
-    width: 100%;
-    max-height: 82vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .modal-head {
-    background: var(--sage-dark);
-    color: #fff;
-    padding: 20px 26px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .modal-head h3 { color: #fff; font-weight: 600; font-size: 19px; }
-  .modal-count { font-size: 13px; color: #cdd6c7; margin-top: 2px; }
-  .modal-close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; line-height: 1; padding: 6px; }
-  .modal-list { overflow-y: auto; max-height: 70vh; padding: 10px 0; }
-  .booking-item {
-    padding: 16px 26px;
-    border-bottom: 1px solid var(--divider);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .booking-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .booking-type-badge { font-size: 11.5px; font-weight: 600; padding: 4px 11px; border-radius: 20px; }
-  .booking-type-badge.estetica { background: rgba(232,180,184,.25); color: var(--rose-dark); }
-  .booking-type-badge.auto { background: rgba(168,181,160,.25); color: var(--sage-dark); }
-  .booking-name { font-weight: 600; font-size: 15.5px; color: var(--text); }
-  .booking-meta { font-size: 13.5px; color: var(--text-2); }
-  .booking-remove {
-    margin-top: 6px;
-    align-self: flex-start;
-    background: none;
-    border: 1px solid rgba(176,106,112,.4);
-    color: var(--rose-dark);
-    font-size: 12.5px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  .booking-remove:hover { background: rgba(232,180,184,.15); }
-  .empty-admin { text-align: center; padding: 60px 26px; color: var(--text-3); font-size: 15px; }
+  .error-whats { margin-bottom: 18px; width: 100%; text-decoration: none; }
 
   @media (max-width: 560px) {
     .footer-bottom { flex-direction: column; align-items: flex-start; }
@@ -797,6 +737,7 @@
         </div>
 
         <div class="error-msg" id="errorMsg" hidden></div>
+        <a class="btn btn-outline error-whats" id="errorWhats" href="https://wa.me/5547984838302" target="_blank" rel="noopener" hidden>Falar pelo WhatsApp</a>
 
         <button type="submit" class="btn btn-sage submit-btn">Confirmar meu agendamento</button>
       </form>
@@ -830,19 +771,8 @@
   </div>
 </footer>
 
-<div id="adminOverlay" class="modal-overlay" hidden>
-  <div class="modal-box">
-    <div class="modal-head">
-      <div>
-        <h3>Agendamentos recebidos</h3>
-        <div class="modal-count" id="modalCount">0 agendamentos</div>
-      </div>
-      <button class="modal-close" id="btnCloseAdmin" type="button">&times;</button>
-    </div>
-    <div class="modal-list" id="modalList"></div>
-  </div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
 <script>
 (function () {
   "use strict";
@@ -886,18 +816,42 @@
     avulsosOpen: false,
     rituaisOpen: false,
     selectedAvulsos: [],
-    selectedRitual: null,
-    bookings: []
+    selectedRitual: null
   };
 
-  function loadBookings() {
-    try {
-      var raw = localStorage.getItem("vitabloom_bookings");
-      state.bookings = raw ? JSON.parse(raw) : [];
-    } catch (e) { state.bookings = []; }
+  var WHATSAPP = "5547984838302";
+
+  // ---------- Supabase ----------
+  var sb = null;
+  try {
+    if (window.supabase && typeof SUPABASE_URL !== "undefined" && SUPABASE_URL && SUPABASE_ANON_KEY) {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false }
+      });
+    }
+  } catch (e) { sb = null; }
+
+  function newId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   }
-  function saveBookings() {
-    try { localStorage.setItem("vitabloom_bookings", JSON.stringify(state.bookings)); } catch (e) {}
+
+  // Registra uma visita por sessão do navegador. Falhas são silenciosas.
+  function trackVisit() {
+    if (!sb) return;
+    var sid;
+    try {
+      if (sessionStorage.getItem("vb_visit_sent")) return;
+      sid = sessionStorage.getItem("vb_session_id");
+      if (!sid) { sid = newId(); sessionStorage.setItem("vb_session_id", sid); }
+      sessionStorage.setItem("vb_visit_sent", "1");
+    } catch (e) { sid = newId(); }
+    var utm = null;
+    try { utm = new URLSearchParams(window.location.search).get("utm_source"); } catch (e) {}
+    sb.from("visits").insert({
+      session_id: sid,
+      referrer: (document.referrer || "").slice(0, 500) || null,
+      utm_source: utm ? utm.slice(0, 100) : null
+    }).then(function () {}, function () {});
   }
 
   // ---------- Pricing table (#precos) ----------
@@ -1060,19 +1014,58 @@
     document.getElementById("chevronRituais").classList.toggle("open", state.rituaisOpen);
   }
 
-  function showError(msg) {
+  function showError(msg, whatsHref) {
     var el = document.getElementById("errorMsg");
+    var wa = document.getElementById("errorWhats");
+    wa.hidden = true;
     if (!msg) { el.hidden = true; el.textContent = ""; return; }
     el.hidden = false;
     el.textContent = msg;
+    if (whatsHref) { wa.href = whatsHref; wa.hidden = false; }
+  }
+
+  function serviceLabel(tipo, ritualId, avulsoIds) {
+    if (tipo !== "estetica") return "Autoconhecimento";
+    if (ritualId) {
+      var r = RITUAIS.filter(function (x) { return x.id === ritualId; })[0];
+      return r ? r.nome : ritualId;
+    }
+    return avulsoIds.map(function (id) {
+      var a = avulsoById(id);
+      return a ? a.nome : id;
+    }).join(", ");
+  }
+
+  function bookingTotal(tipo, ritualId, avulsoIds) {
+    if (tipo !== "estetica") return 0;
+    if (ritualId) {
+      var r = RITUAIS.filter(function (x) { return x.id === ritualId; })[0];
+      return r ? r.preco : 0;
+    }
+    return avulsoIds.reduce(function (sum, id) {
+      var a = avulsoById(id);
+      return sum + (a ? a.preco : 0);
+    }, 0);
+  }
+
+  function whatsappLink(b) {
+    var txt = "Olá! Quero agendar na VITABLOOM.\n" +
+      "Serviço: " + b.services_label + "\n" +
+      "Data: " + b.date + " às " + b.time + "\n" +
+      "Nome: " + b.name + "\n" +
+      "Telefone: " + b.phone;
+    return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(txt);
   }
 
   function firstName(full) {
     return (full || "").trim().split(/\s+/)[0] || "";
   }
 
+  var submitting = false;
+
   function handleSubmit(e) {
     e.preventDefault();
+    if (submitting) return;
     var date = document.getElementById("fDate").value;
     var time = document.getElementById("fTime").value;
     var name = document.getElementById("fName").value.trim();
@@ -1089,25 +1082,47 @@
     }
     showError(null);
 
+    var tipo = state.tipoAtendimento;
+    var avulsos = tipo === "estetica" ? state.selectedAvulsos.slice() : [];
+    var ritual = tipo === "estetica" ? state.selectedRitual : null;
     var booking = {
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-      tipo: state.tipoAtendimento,
+      tipo: tipo,
       date: date,
       time: time,
-      avulsos: state.selectedAvulsos.slice(),
-      ritual: state.selectedRitual,
+      avulsos: avulsos,
+      ritual: ritual,
+      services_label: serviceLabel(tipo, ritual, avulsos),
+      total: bookingTotal(tipo, ritual, avulsos),
       name: name,
       phone: phone,
-      email: email,
-      createdAt: new Date().toISOString()
+      email: email
     };
-    state.bookings.unshift(booking);
-    saveBookings();
-    renderAdmin();
 
-    document.getElementById("confirmName").textContent = firstName(name);
-    document.getElementById("bookingForm").hidden = true;
-    document.getElementById("confirmState").hidden = false;
+    var btn = document.querySelector("#bookingForm .submit-btn");
+    var btnText = btn.textContent;
+    submitting = true;
+    btn.disabled = true;
+    btn.textContent = "Enviando...";
+
+    var request = sb
+      ? sb.from("bookings").insert(booking)
+      : Promise.resolve({ error: new Error("Supabase não configurado") });
+
+    request.then(function (res) {
+      if (res && res.error) throw res.error;
+      document.getElementById("confirmName").textContent = firstName(name);
+      document.getElementById("bookingForm").hidden = true;
+      document.getElementById("confirmState").hidden = false;
+    }).catch(function () {
+      showError(
+        "Não conseguimos registrar seu agendamento agora. Seus dados continuam preenchidos: tente novamente em instantes ou envie pelo WhatsApp.",
+        whatsappLink(booking)
+      );
+    }).then(function () {
+      submitting = false;
+      btn.disabled = false;
+      btn.textContent = btnText;
+    });
   }
 
   function resetForm() {
@@ -1123,60 +1138,6 @@
     document.getElementById("bookingForm").hidden = false;
     document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
   }
-
-  // ---------- Admin ----------
-  function bookingLabel(b) {
-    if (b.ritual) {
-      var r = RITUAIS.filter(function (x) { return x.id === b.ritual; })[0];
-      return r ? r.nome : b.ritual;
-    }
-    if (b.avulsos && b.avulsos.length) {
-      return b.avulsos.map(function (id) {
-        var a = avulsoById(id);
-        return a ? a.nome : id;
-      }).join(", ");
-    }
-    return "Autoconhecimento";
-  }
-
-  function renderAdmin() {
-    document.getElementById("modalCount").textContent = state.bookings.length + (state.bookings.length === 1 ? " agendamento" : " agendamentos");
-    var list = document.getElementById("modalList");
-    list.innerHTML = "";
-    if (state.bookings.length === 0) {
-      list.innerHTML = '<div class="empty-admin">Nenhum agendamento ainda.</div>';
-      return;
-    }
-    state.bookings.forEach(function (b) {
-      var item = document.createElement("div");
-      item.className = "booking-item";
-      item.innerHTML =
-        '<div class="booking-top">' +
-          '<span class="booking-type-badge ' + (b.tipo === "estetica" ? "estetica" : "auto") + '">' +
-            (b.tipo === "estetica" ? "Estética" : "Autoconhecimento") +
-          "</span>" +
-          '<span class="booking-name">' + b.name + "</span>" +
-        "</div>" +
-        '<div class="booking-meta">' + b.date + " às " + b.time + " · " + bookingLabel(b) + "</div>" +
-        '<div class="booking-meta">' + b.phone + " · " + b.email + "</div>";
-      var removeBtn = document.createElement("button");
-      removeBtn.type = "button";
-      removeBtn.className = "booking-remove";
-      removeBtn.textContent = "Remover";
-      removeBtn.addEventListener("click", function () { removeBooking(b.id); });
-      item.appendChild(removeBtn);
-      list.appendChild(item);
-    });
-  }
-
-  function removeBooking(id) {
-    state.bookings = state.bookings.filter(function (b) { return b.id !== id; });
-    saveBookings();
-    renderAdmin();
-  }
-
-  function openAdmin() { document.getElementById("adminOverlay").hidden = false; }
-  function closeAdmin() { document.getElementById("adminOverlay").hidden = true; }
 
   // ---------- Wiring ----------
   document.getElementById("fDate").min = new Date().toISOString().slice(0, 10);
@@ -1201,17 +1162,14 @@
   document.getElementById("bookingForm").addEventListener("submit", handleSubmit);
   document.getElementById("btnReset").addEventListener("click", resetForm);
 
-  document.getElementById("btnOpenAdmin").addEventListener("click", openAdmin);
-  document.getElementById("btnCloseAdmin").addEventListener("click", closeAdmin);
-  document.getElementById("adminOverlay").addEventListener("click", function (e) {
-    if (e.target === document.getElementById("adminOverlay")) closeAdmin();
+  document.getElementById("btnOpenAdmin").addEventListener("click", function () {
+    window.location.href = "admin.html";
   });
 
-  loadBookings();
+  trackVisit();
   renderAvulsosPrecos();
   renderRituaisPrecos();
   renderForm();
-  renderAdmin();
 })();
 </script>
 </body>
