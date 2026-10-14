@@ -10,5 +10,5 @@
 // A chave anon é feita para ser pública; quem protege os dados são as
 // regras (RLS) criadas pelo supabase-setup.sql.
 
-var SUPABASE_URL = "";
+var SUPABASE_URL = "https://mpvpftucizmxwxgocvqi.supabase.co";
 var SUPABASE_ANON_KEY = "";

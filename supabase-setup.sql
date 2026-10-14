@@ -2,8 +2,8 @@
 -- VITABLOOM · Configuração do banco (Supabase)
 -- Cole este arquivo inteiro no SQL Editor do Supabase e clique em RUN.
 --
--- ANTES DE RODAR: troque 'seu@email.com' (no fim do arquivo) pelo
--- e-mail que você vai usar para entrar no painel (admin.html).
+-- E-mail da administradora: contatogabriel73@gmail.com (no fim do arquivo).
+-- Se for entrar no painel com outro e-mail, troque-o antes de rodar.
 -- Pode rodar de novo sem problemas (o script é idempotente).
 -- =====================================================================
 
@@ -135,5 +135,5 @@ create policy "bookings_delete_admin" on public.bookings
 -- ---------------------------------------------------------------------
 
 insert into public.admins (email)
-values ('seu@email.com')
+values ('contatogabriel73@gmail.com')
 on conflict (email) do nothing;
