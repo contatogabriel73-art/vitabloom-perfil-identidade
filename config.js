@@ -11,4 +11,4 @@
 // regras (RLS) criadas pelo supabase-setup.sql.
 
 var SUPABASE_URL = "https://mpvpftucizmxwxgocvqi.supabase.co";
-var SUPABASE_ANON_KEY = "";
+var SUPABASE_ANON_KEY = "sb_publishable_D9f9C4xnlPW9LGYM_mfTrw_coyH1UNb";
