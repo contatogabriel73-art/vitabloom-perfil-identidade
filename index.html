@@ -362,6 +362,26 @@
   }
   .auto-tab-empty p { color: var(--text-2); font-size: 15.5px; margin-bottom: 26px; }
 
+  .price-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 10px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .price-row:last-child { border-bottom: none; }
+  .tier-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 11px 0;
+    border-top: 1px solid var(--divider);
+  }
+  .tier-row:first-of-type { border-top: none; margin-top: 2px; }
+  .tier-label { font-size: 14.5px; color: var(--text-2); }
+  .tier-price { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 22px; color: var(--sage-mid); white-space: nowrap; }
+  .auto-cta { text-align: center; padding-top: 38px; }
+
   [hidden] { display: none !important; }
 
   /* ---------- Agendamento ---------- */
@@ -643,9 +663,47 @@
     </div>
 
     <div id="tabAuto" hidden>
-      <div class="auto-tab-empty">
-        <div class="status-badge">Tabela e planos chegam em breve</div>
-        <p>Estamos preparando o espaço de autoconhecimento da VITABLOOM com todo o cuidado. Enquanto isso, você já pode garantir seu horário.</p>
+      <div class="avulsos-box">
+        <div class="price-row">
+          <span class="avulso-ico">✿</span>
+          <span class="avulso-name">Atendimento on-line · por sessão</span>
+          <span class="avulso-price">R$ 150</span>
+        </div>
+        <div class="price-row">
+          <span class="avulso-ico">✿</span>
+          <span class="avulso-name">Atendimento presencial · por sessão</span>
+          <span class="avulso-price">R$ 180</span>
+        </div>
+      </div>
+
+      <div class="rituais-row">
+        <div class="ritual-card">
+          <h3>Perfil de Identidade Pessoal</h3>
+          <p class="ritual-desc">Mapeamento do seu perfil de identidade para sua jornada de autoconhecimento.</p>
+          <div class="tier-row">
+            <span class="tier-label">Sem devolutiva</span>
+            <span class="tier-price">R$ 599</span>
+          </div>
+          <div class="tier-row">
+            <span class="tier-label">Com devolutiva</span>
+            <span class="tier-price">R$ 799</span>
+          </div>
+        </div>
+        <div class="ritual-card">
+          <h3>Perfil de Identidade Gerencial</h3>
+          <p class="ritual-desc">Mapeamento do perfil voltado à liderança, gestão de equipes e tomada de decisão.</p>
+          <div class="tier-row">
+            <span class="tier-label">Sem devolutiva</span>
+            <span class="tier-price">R$ 999</span>
+          </div>
+          <div class="tier-row">
+            <span class="tier-label">Com devolutiva</span>
+            <span class="tier-price">R$ 1.199</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auto-cta">
         <button class="btn btn-outline" id="btnAutoTabAgendar" type="button">Quero agendar</button>
       </div>
     </div>
