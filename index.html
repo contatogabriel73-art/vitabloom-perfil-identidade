@@ -1106,9 +1106,10 @@
   }
 
   function whatsappLink(b) {
-    var txt = "Olá! Quero agendar na VITABLOOM.\n" +
+    var txt = "Olá! Acabei de agendar na VITABLOOM e quero confirmar:\n" +
       "Serviço: " + b.services_label + "\n" +
       "Data: " + b.date + " às " + b.time + "\n" +
+      "Valor: " + fmt(b.total) + "\n" +
       "Nome: " + b.name + "\n" +
       "Telefone: " + b.phone;
     return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(txt);
@@ -1167,6 +1168,10 @@
 
     request.then(function (res) {
       if (res && res.error) throw res.error;
+      if (tipo === "estetica") {
+        window.location.href = whatsappLink(booking);
+        return;
+      }
       document.getElementById("confirmName").textContent = firstName(name);
       document.getElementById("bookingForm").hidden = true;
       document.getElementById("confirmState").hidden = false;
