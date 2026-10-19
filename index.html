@@ -283,23 +283,6 @@
     padding: 8px clamp(14px, 3vw, 24px);
     margin-bottom: 50px;
   }
-  .avulso-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 18px 10px;
-    border-bottom: 1px solid var(--divider);
-    text-align: left;
-    width: 100%;
-    background: none;
-    border-left: none; border-right: none; border-top: none;
-    cursor: pointer;
-    font-family: 'Open Sans', sans-serif;
-    min-height: 44px;
-    transition: background .15s ease;
-  }
-  .avulso-row:last-child { border-bottom: none; }
-  .avulso-row:hover { background: rgba(232,180,184,.1); }
   .avulso-ico { color: var(--rose); font-size: 17px; flex-shrink: 0; }
   .avulso-name { flex: 1; font-size: 15.5px; color: var(--text); }
   .avulso-price {
@@ -308,11 +291,6 @@
     font-size: 23px;
     color: var(--sage-mid);
     white-space: nowrap;
-  }
-  .avulso-cta {
-    font-size: 12.5px; font-weight: 600; color: var(--sage-dark);
-    background: rgba(168,181,160,.18);
-    padding: 7px 14px; border-radius: 20px; white-space: nowrap;
   }
 
   .rituais-row { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
@@ -326,31 +304,9 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    position: relative;
-  }
-  .ritual-card.destaque {
-    background: linear-gradient(160deg, #fff, rgba(232,180,184,.1));
-    border: 2px solid var(--rose);
-  }
-  .ritual-badge {
-    position: absolute; top: -13px; right: 22px;
-    background: var(--rose); color: #fff;
-    font-size: 11.5px; font-weight: 600; letter-spacing: .5px;
-    padding: 5px 14px; border-radius: 20px;
   }
   .ritual-card h3 { font-weight: 600; font-size: 22px; }
   .ritual-card .ritual-desc { color: var(--text-2); font-size: 14.5px; }
-  .ritual-price-row { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; }
-  .ritual-price-old { color: var(--text-3); font-size: 15px; text-decoration: line-through; }
-  .ritual-price { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 30px; color: var(--rose-dark); }
-  .ritual-card.destaque .ritual-price { color: var(--rose-dark); }
-  .ritual-card:not(.destaque) .ritual-price { color: var(--sage-mid); }
-  .ritual-save { font-size: 12.5px; color: var(--sage-soft); font-weight: 600; }
-  .ritual-list { list-style: none; margin: 8px 0 14px; display: flex; flex-direction: column; gap: 6px; }
-  .ritual-list li { font-size: 14px; color: var(--text-2); display: flex; gap: 8px; }
-  .ritual-list li::before { content: "✿"; color: var(--sage); flex-shrink: 0; }
-  .ritual-card.destaque .ritual-list li::before { color: var(--rose); }
-  .ritual-card .btn { margin-top: auto; width: 100%; }
 
   .auto-tab-empty { text-align: center; padding: 50px 20px; }
   .status-badge {
@@ -381,7 +337,7 @@
   .tier-row:first-of-type { border-top: none; margin-top: 2px; }
   .tier-label { font-size: 14.5px; color: var(--text-2); }
   .tier-price { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 22px; color: var(--sage-mid); white-space: nowrap; }
-  .auto-cta { text-align: center; padding-top: 38px; }
+  .tab-cta { text-align: center; padding-top: 38px; }
 
   [hidden] { display: none !important; }
 
@@ -646,6 +602,9 @@
     <div id="tabEstetica">
       <div class="avulsos-box" id="avulsosBoxPrecos"></div>
       <div class="rituais-row" id="rituaisRowPrecos"></div>
+      <div class="tab-cta">
+        <button class="btn btn-outline" id="btnEsteticaTabAgendar" type="button">Quero agendar</button>
+      </div>
     </div>
 
     <div id="tabAuto" hidden>
@@ -689,7 +648,7 @@
         </div>
       </div>
 
-      <div class="auto-cta">
+      <div class="tab-cta">
         <button class="btn btn-outline" id="btnAutoTabAgendar" type="button">Quero agendar</button>
       </div>
     </div>
@@ -818,10 +777,9 @@
 
   var RITUAIS = [
     {
-      id: "essencial", nome: "Ritual Essencial", preco: 130, precoOriginal: 150,
+      id: "essencial", nome: "Ritual Essencial", preco: 130,
       descricao: "Limpeza de pele profunda e design de sobrancelhas em um só atendimento.",
-      inclui: ["limpeza", "sobrancelha"],
-      destaque: true
+      inclui: ["limpeza", "sobrancelha"]
     }
   ];
 
@@ -838,7 +796,6 @@
   ];
 
   var fmt = function (n) { return "R$ " + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."); };
-  var avulsoById = function (id) { return AVULSOS.filter(function (a) { return a.id === id; })[0]; };
   var findInList = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
   var catalogFor = function (tipo) {
     return tipo === "estetica"
@@ -896,15 +853,12 @@
     var box = document.getElementById("avulsosBoxPrecos");
     box.innerHTML = "";
     AVULSOS.forEach(function (s) {
-      var row = document.createElement("button");
-      row.type = "button";
-      row.className = "avulso-row";
+      var row = document.createElement("div");
+      row.className = "price-row";
       row.innerHTML =
         '<span class="avulso-ico">✿</span>' +
         '<span class="avulso-name">' + s.nome + '</span>' +
-        '<span class="avulso-price">' + fmt(s.preco) + '</span>' +
-        '<span class="avulso-cta">Agendar →</span>';
-      row.addEventListener("click", function () { pickAvulsoFromPrecos(s.id); });
+        '<span class="avulso-price">' + fmt(s.preco) + '</span>';
       box.appendChild(row);
     });
   }
@@ -914,28 +868,14 @@
     row.innerHTML = "";
     RITUAIS.forEach(function (r) {
       var card = document.createElement("div");
-      card.className = "ritual-card" + (r.destaque ? " destaque" : "");
-      var economia = r.precoOriginal - r.preco;
-      var itensHtml = r.inclui.map(function (id) {
-        var a = avulsoById(id);
-        return "<li>" + a.nome + "</li>";
-      }).join("");
+      card.className = "ritual-card";
       card.innerHTML =
-        (r.destaque ? '<span class="ritual-badge">Oferta especial</span>' : "") +
         "<h3>" + r.nome + "</h3>" +
         '<p class="ritual-desc">' + r.descricao + "</p>" +
-        '<ul class="ritual-list">' + itensHtml + "</ul>" +
-        '<div class="ritual-price-row">' +
-          '<span class="ritual-price-old">' + fmt(r.precoOriginal) + "</span>" +
-          '<span class="ritual-price">' + fmt(r.preco) + "</span>" +
-        "</div>" +
-        '<span class="ritual-save">Economia de ' + fmt(economia) + "</span>";
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = r.destaque ? "btn btn-rose" : "btn btn-outline";
-      btn.textContent = "Quero este ritual";
-      btn.addEventListener("click", function () { pickRitualFromPrecos(r.id); });
-      card.appendChild(btn);
+        '<div class="tier-row">' +
+          '<span class="tier-label">Atendimento completo</span>' +
+          '<span class="tier-price">' + fmt(r.preco) + "</span>" +
+        "</div>";
       row.appendChild(card);
     });
   }
@@ -955,22 +895,6 @@
   function gotoAuto() {
     setPricingTab("auto");
     document.getElementById("precos").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function pickAvulsoFromPrecos(id) {
-    setTipo("estetica");
-    if (state.selectedAvulsos.indexOf(id) === -1) state.selectedAvulsos.push(id);
-    state.avulsosOpen = true;
-    renderForm();
-    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function pickRitualFromPrecos(id) {
-    setTipo("estetica");
-    state.selectedRitual = id;
-    state.rituaisOpen = true;
-    renderForm();
-    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   // ---------- Booking form ----------
@@ -1176,6 +1100,10 @@
   document.getElementById("btnHeroAgendar").addEventListener("click", gotoPrecos);
   document.getElementById("btnCardEstetica").addEventListener("click", gotoPrecos);
   document.getElementById("btnCardAuto").addEventListener("click", gotoAuto);
+  document.getElementById("btnEsteticaTabAgendar").addEventListener("click", function () {
+    setTipo("estetica");
+    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
   document.getElementById("btnAutoTabAgendar").addEventListener("click", function () {
     setTipo("auto");
     document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
