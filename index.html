@@ -315,9 +315,10 @@
     padding: 7px 14px; border-radius: 20px; white-space: nowrap;
   }
 
-  .rituais-row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .rituais-row { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
   .ritual-card {
     flex: 1 1 300px;
+    max-width: 420px;
     background: var(--card-off);
     border: 1px solid rgba(168,181,160,.35);
     border-radius: 22px;
@@ -609,12 +610,10 @@
       <div class="service-card">
         <div class="service-icon rose">✿</div>
         <h3>Estética</h3>
-        <p>Protocolos de pele, sobrancelhas e microagulhamento para realçar sua beleza natural com técnica e delicadeza.</p>
+        <p>Limpeza de pele e design de sobrancelhas para realçar sua beleza natural com técnica e delicadeza.</p>
         <div class="tag-row">
           <span class="tag-pill">Limpeza de pele</span>
-          <span class="tag-pill">Peelings</span>
           <span class="tag-pill">Sobrancelhas</span>
-          <span class="tag-pill">Microagulhamento</span>
         </div>
         <button class="btn btn-outline" id="btnCardEstetica" type="button">Quero agendar</button>
       </div>
@@ -814,30 +813,14 @@
 
   var AVULSOS = [
     { id: "limpeza", nome: "Limpeza de pele profunda", preco: 100 },
-    { id: "peeling-quimico", nome: "Peeling químico", preco: 140 },
-    { id: "peeling-fisico", nome: "Peeling físico", preco: 120 },
-    { id: "sobrancelha", nome: "Design de sobrancelhas", preco: 50 },
-    { id: "microagulhamento-facial", nome: "Microagulhamento facial", preco: 160 },
-    { id: "microagulhamento-labial", nome: "Microagulhamento labial", preco: 70 }
+    { id: "sobrancelha", nome: "Design de sobrancelhas", preco: 50 }
   ];
 
   var RITUAIS = [
     {
-      id: "essencial", nome: "Ritual Essencial", preco: 240, precoOriginal: 290,
-      descricao: "O primeiro passo para renovar sua pele com cuidado completo.",
-      inclui: ["limpeza", "sobrancelha", "peeling-quimico"],
-      destaque: false
-    },
-    {
-      id: "renovar", nome: "Ritual Renovar", preco: 420, precoOriginal: 450,
-      descricao: "Aprofunda a renovação da pele com microagulhamento facial.",
-      inclui: ["limpeza", "sobrancelha", "peeling-quimico", "microagulhamento-facial"],
-      destaque: false
-    },
-    {
-      id: "completo", nome: "Ritual Completo", preco: 540, precoOriginal: 640,
-      descricao: "A experiência VITABLOOM por completo, dos pés à cabeça.",
-      inclui: ["limpeza", "sobrancelha", "peeling-quimico", "peeling-fisico", "microagulhamento-facial", "microagulhamento-labial"],
+      id: "essencial", nome: "Ritual Essencial", preco: 130, precoOriginal: 150,
+      descricao: "Limpeza de pele profunda e design de sobrancelhas em um só atendimento.",
+      inclui: ["limpeza", "sobrancelha"],
       destaque: true
     }
   ];
@@ -938,7 +921,7 @@
         return "<li>" + a.nome + "</li>";
       }).join("");
       card.innerHTML =
-        (r.destaque ? '<span class="ritual-badge">Mais vantajoso</span>' : "") +
+        (r.destaque ? '<span class="ritual-badge">Oferta especial</span>' : "") +
         "<h3>" + r.nome + "</h3>" +
         '<p class="ritual-desc">' + r.descricao + "</p>" +
         '<ul class="ritual-list">' + itensHtml + "</ul>" +
