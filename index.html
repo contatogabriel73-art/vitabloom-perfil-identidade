@@ -741,7 +741,7 @@
 
           <div class="accordion">
             <button type="button" class="accordion-head" id="accHeadAvulsos">
-              <span class="accordion-label avulsos-label">Serviços avulsos · escolha quantos quiser</span>
+              <span class="accordion-label avulsos-label" id="avulsosLabelText">Serviços avulsos · escolha quantos quiser</span>
               <span class="count-badge" id="avulsosCountBadge" hidden>0</span>
               <span class="chevron" id="chevronAvulsos">▾</span>
             </button>
@@ -750,7 +750,7 @@
 
           <div class="accordion">
             <button type="button" class="accordion-head" id="accHeadRituais">
-              <span class="accordion-label rituais-label">Rituais · escolha um</span>
+              <span class="accordion-label rituais-label" id="rituaisLabelText">Rituais · escolha um</span>
               <span class="count-badge" id="ritualCountBadge" hidden>1</span>
               <span class="chevron" id="chevronRituais">▾</span>
             </button>
@@ -842,8 +842,26 @@
     }
   ];
 
+  var AUTO_SESSOES = [
+    { id: "online", nome: "Atendimento on-line · por sessão", preco: 150 },
+    { id: "presencial", nome: "Atendimento presencial · por sessão", preco: 180 }
+  ];
+
+  var AUTO_PERFIS = [
+    { id: "pessoal-sem", nome: "Perfil de Identidade Pessoal · sem devolutiva", preco: 599 },
+    { id: "pessoal-com", nome: "Perfil de Identidade Pessoal · com devolutiva", preco: 799 },
+    { id: "gerencial-sem", nome: "Perfil de Identidade Gerencial · sem devolutiva", preco: 999 },
+    { id: "gerencial-com", nome: "Perfil de Identidade Gerencial · com devolutiva", preco: 1199 }
+  ];
+
   var fmt = function (n) { return "R$ " + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."); };
   var avulsoById = function (id) { return AVULSOS.filter(function (a) { return a.id === id; })[0]; };
+  var findInList = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
+  var catalogFor = function (tipo) {
+    return tipo === "estetica"
+      ? { avulsos: AVULSOS, pacotes: RITUAIS, avulsosLabel: "Serviços avulsos · escolha quantos quiser", pacotesLabel: "Rituais · escolha um" }
+      : { avulsos: AUTO_SESSOES, pacotes: AUTO_PERFIS, avulsosLabel: "Sessões · escolha quantas quiser", pacotesLabel: "Perfil de Identidade · escolha um" };
+  };
 
   var state = {
     pricingTab: "estetica",
@@ -974,10 +992,19 @@
 
   // ---------- Booking form ----------
   function setTipo(tipo) {
+    if (state.tipoAtendimento !== tipo) {
+      state.selectedAvulsos = [];
+      state.selectedRitual = null;
+      state.avulsosOpen = false;
+      state.rituaisOpen = false;
+    }
     state.tipoAtendimento = tipo;
     document.getElementById("pillEstetica").setAttribute("data-active", tipo === "estetica" ? "true" : "false");
     document.getElementById("pillAuto").setAttribute("data-active", tipo === "auto" ? "true" : "false");
-    document.getElementById("servicesField").hidden = tipo !== "estetica";
+    var cat = catalogFor(tipo);
+    document.getElementById("avulsosLabelText").textContent = cat.avulsosLabel;
+    document.getElementById("rituaisLabelText").textContent = cat.pacotesLabel;
+    renderForm();
   }
 
   function toggleAvulso(id) {
@@ -1001,7 +1028,7 @@
   function renderAvulsoOpts() {
     var panel = document.getElementById("panelAvulsos");
     panel.innerHTML = "";
-    AVULSOS.forEach(function (a) {
+    catalogFor(state.tipoAtendimento).avulsos.forEach(function (a) {
       var checked = state.selectedAvulsos.indexOf(a.id) !== -1;
       var row = document.createElement("div");
       row.className = "opt-row";
@@ -1017,7 +1044,7 @@
   function renderRitualOpts() {
     var panel = document.getElementById("panelRituais");
     panel.innerHTML = "";
-    RITUAIS.forEach(function (r) {
+    catalogFor(state.tipoAtendimento).pacotes.forEach(function (r) {
       var checked = state.selectedRitual === r.id;
       var row = document.createElement("div");
       row.className = "opt-row";
@@ -1061,25 +1088,25 @@
   }
 
   function serviceLabel(tipo, ritualId, avulsoIds) {
-    if (tipo !== "estetica") return "Autoconhecimento";
+    var cat = catalogFor(tipo);
     if (ritualId) {
-      var r = RITUAIS.filter(function (x) { return x.id === ritualId; })[0];
+      var r = findInList(cat.pacotes, ritualId);
       return r ? r.nome : ritualId;
     }
     return avulsoIds.map(function (id) {
-      var a = avulsoById(id);
+      var a = findInList(cat.avulsos, id);
       return a ? a.nome : id;
     }).join(", ");
   }
 
   function bookingTotal(tipo, ritualId, avulsoIds) {
-    if (tipo !== "estetica") return 0;
+    var cat = catalogFor(tipo);
     if (ritualId) {
-      var r = RITUAIS.filter(function (x) { return x.id === ritualId; })[0];
+      var r = findInList(cat.pacotes, ritualId);
       return r ? r.preco : 0;
     }
     return avulsoIds.reduce(function (sum, id) {
-      var a = avulsoById(id);
+      var a = findInList(cat.avulsos, id);
       return sum + (a ? a.preco : 0);
     }, 0);
   }
@@ -1110,15 +1137,15 @@
       showError("Por favor, preencha todos os campos para confirmar seu agendamento.");
       return;
     }
-    if (state.tipoAtendimento === "estetica" && state.selectedAvulsos.length === 0 && !state.selectedRitual) {
-      showError("Escolha ao menos um serviço avulso ou um ritual.");
+    if (state.selectedAvulsos.length === 0 && !state.selectedRitual) {
+      showError("Escolha ao menos uma opção de atendimento.");
       return;
     }
     showError(null);
 
     var tipo = state.tipoAtendimento;
-    var avulsos = tipo === "estetica" ? state.selectedAvulsos.slice() : [];
-    var ritual = tipo === "estetica" ? state.selectedRitual : null;
+    var avulsos = state.selectedAvulsos.slice();
+    var ritual = state.selectedRitual;
     var booking = {
       tipo: tipo,
       date: date,
