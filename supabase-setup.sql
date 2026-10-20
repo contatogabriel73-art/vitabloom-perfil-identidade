@@ -43,6 +43,15 @@ create table if not exists public.bookings (
 create index if not exists bookings_created_at_idx on public.bookings (created_at desc);
 create index if not exists visits_created_at_idx   on public.visits (created_at desc);
 
+-- Só existe 1 sala de atendimento: nunca pode haver dois agendamentos
+-- ativos (não cancelados) na mesma data+horário, não importa a
+-- profissional/tipo. Isso impede o duplo agendamento mesmo se duas
+-- pessoas confirmarem ao mesmo tempo.
+drop index if exists public.bookings_unique_slot_idx;
+create unique index bookings_unique_slot_idx
+  on public.bookings ("date", "time")
+  where status <> 'cancelado';
+
 -- ---------------------------------------------------------------------
 -- 2. Quem é administradora
 --    Só e-mails que estão nesta tabela enxergam/alteram os dados.
@@ -73,6 +82,24 @@ $$;
 
 revoke all on function public.is_admin() from public;
 grant execute on function public.is_admin() to anon, authenticated;
+
+-- Deixa o site perguntar "esse horário está livre?" sem expor nenhum
+-- dado de quem já agendou (só devolve verdadeiro/falso).
+create or replace function public.slot_available(p_date date, p_time text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select not exists (
+    select 1 from public.bookings
+    where "date" = p_date and "time" = p_time and status <> 'cancelado'
+  );
+$$;
+
+revoke all on function public.slot_available(date, text) from public;
+grant execute on function public.slot_available(date, text) to anon, authenticated;
 
 -- ---------------------------------------------------------------------
 -- 3. Segurança (RLS)

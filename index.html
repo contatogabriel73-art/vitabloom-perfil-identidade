@@ -694,6 +694,8 @@
           </div>
         </div>
 
+        <div class="error-msg" id="slotWarning" hidden></div>
+
         <div class="field" id="servicesField">
           <label>Serviços desejados</label>
 
@@ -809,7 +811,8 @@
     avulsosOpen: false,
     rituaisOpen: false,
     selectedAvulsos: [],
-    selectedRitual: null
+    selectedRitual: null,
+    slotBlocked: false
   };
 
   var WHATSAPP_ESTETICA = "554788377331";
@@ -1030,6 +1033,32 @@
   }
 
   var submitting = false;
+  var slotCheckSeq = 0;
+
+  function clearSlotWarning() {
+    state.slotBlocked = false;
+    var el = document.getElementById("slotWarning");
+    el.hidden = true;
+    el.textContent = "";
+  }
+
+  function checkSlotAvailability() {
+    var date = document.getElementById("fDate").value;
+    var time = document.getElementById("fTime").value;
+    clearSlotWarning();
+    if (!date || !time || !sb) return;
+    var seq = ++slotCheckSeq;
+    sb.rpc("slot_available", { p_date: date, p_time: time }).then(function (res) {
+      if (seq !== slotCheckSeq) return;
+      if (res && res.error) return;
+      if (res && res.data === false) {
+        state.slotBlocked = true;
+        var el = document.getElementById("slotWarning");
+        el.hidden = false;
+        el.textContent = "Esse horário já está reservado (só temos uma sala de atendimento). Escolha outro horário.";
+      }
+    }).catch(function () {});
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -1046,6 +1075,10 @@
     }
     if (state.selectedAvulsos.length === 0 && !state.selectedRitual) {
       showError("Escolha ao menos uma opção de atendimento.");
+      return;
+    }
+    if (state.slotBlocked) {
+      showError("Esse horário já está reservado. Escolha outro horário antes de confirmar.");
       return;
     }
     showError(null);
@@ -1079,7 +1112,12 @@
     request.then(function (res) {
       if (res && res.error) throw res.error;
       window.location.href = whatsappLink(booking);
-    }).catch(function () {
+    }).catch(function (err) {
+      if (err && err.code === "23505") {
+        state.slotBlocked = true;
+        showError("Esse horário acabou de ser reservado por outra pessoa. Escolha outro horário e tente de novo.");
+        return;
+      }
       showError(
         "Não conseguimos registrar seu agendamento agora. Seus dados continuam preenchidos: tente novamente em instantes ou envie pelo WhatsApp.",
         whatsappLink(booking)
@@ -1093,6 +1131,8 @@
 
   // ---------- Wiring ----------
   document.getElementById("fDate").min = new Date().toISOString().slice(0, 10);
+  document.getElementById("fDate").addEventListener("change", checkSlotAvailability);
+  document.getElementById("fTime").addEventListener("change", checkSlotAvailability);
 
   document.getElementById("tabBtnEstetica").addEventListener("click", function () { setPricingTab("estetica"); });
   document.getElementById("tabBtnAuto").addEventListener("click", function () { setPricingTab("auto"); });
