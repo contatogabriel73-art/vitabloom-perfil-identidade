@@ -101,6 +101,24 @@ $$;
 revoke all on function public.slot_available(date, text) from public;
 grant execute on function public.slot_available(date, text) to anon, authenticated;
 
+-- Deixa o site saber QUAIS horários de um dia já estão ocupados, pra
+-- desabilitar essas opções direto na lista (sem expor nenhum dado de
+-- quem agendou — só devolve os horários, tipo {"14:00"}).
+create or replace function public.booked_times_for_date(p_date date)
+returns text[]
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce(array_agg("time"), '{}')
+  from public.bookings
+  where "date" = p_date and status <> 'cancelado';
+$$;
+
+revoke all on function public.booked_times_for_date(date) from public;
+grant execute on function public.booked_times_for_date(date) to anon, authenticated;
+
 -- ---------------------------------------------------------------------
 -- 3. Segurança (RLS)
 -- ---------------------------------------------------------------------

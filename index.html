@@ -682,14 +682,14 @@
             <label for="fTime">Horário preferido</label>
             <select id="fTime" name="time">
               <option value="">Selecione</option>
-              <option>09:00</option>
-              <option>10:00</option>
-              <option>11:00</option>
-              <option>14:00</option>
-              <option>15:00</option>
-              <option>16:00</option>
-              <option>17:00</option>
-              <option>18:00</option>
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+              <option value="18:00">18:00</option>
             </select>
           </div>
         </div>
@@ -1060,6 +1060,32 @@
     }).catch(function () {});
   }
 
+  var timeRefreshSeq = 0;
+
+  function refreshTimeOptions() {
+    var date = document.getElementById("fDate").value;
+    var select = document.getElementById("fTime");
+    var seq = ++timeRefreshSeq;
+    Array.prototype.forEach.call(select.options, function (opt) {
+      if (!opt.value) return;
+      opt.disabled = false;
+      opt.textContent = opt.value;
+    });
+    if (!date || !sb) return;
+    sb.rpc("booked_times_for_date", { p_date: date }).then(function (res) {
+      if (seq !== timeRefreshSeq) return;
+      if (!res || res.error || !res.data) return;
+      var booked = res.data;
+      Array.prototype.forEach.call(select.options, function (opt) {
+        if (opt.value && booked.indexOf(opt.value) !== -1) {
+          opt.disabled = true;
+          opt.textContent = opt.value + " (ocupado)";
+          if (select.value === opt.value) select.value = "";
+        }
+      });
+    }).catch(function () {});
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     if (submitting) return;
@@ -1131,7 +1157,10 @@
 
   // ---------- Wiring ----------
   document.getElementById("fDate").min = new Date().toISOString().slice(0, 10);
-  document.getElementById("fDate").addEventListener("change", checkSlotAvailability);
+  document.getElementById("fDate").addEventListener("change", function () {
+    clearSlotWarning();
+    refreshTimeOptions();
+  });
   document.getElementById("fTime").addEventListener("change", checkSlotAvailability);
 
   document.getElementById("tabBtnEstetica").addEventListener("click", function () { setPricingTab("estetica"); });
