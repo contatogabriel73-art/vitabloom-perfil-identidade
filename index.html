@@ -283,6 +283,15 @@
     padding: 8px clamp(14px, 3vw, 24px);
     margin-bottom: 50px;
   }
+  #avulsosBoxPrecos { margin-bottom: 26px; }
+  .subsection-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--sage-soft);
+    margin: 0 0 14px 4px;
+  }
   .avulso-ico { color: var(--rose); font-size: 17px; flex-shrink: 0; }
   .avulso-name { flex: 1; font-size: 15.5px; color: var(--text); }
   .avulso-price {
@@ -566,10 +575,12 @@
       <div class="service-card">
         <div class="service-icon rose">✿</div>
         <h3>Estética</h3>
-        <p>Limpeza de pele e design de sobrancelhas para realçar sua beleza natural com técnica e delicadeza.</p>
+        <p>Limpeza de pele, sobrancelhas e massoterapia para realçar sua beleza natural com técnica e delicadeza.</p>
         <div class="tag-row">
           <span class="tag-pill">Limpeza de pele</span>
           <span class="tag-pill">Sobrancelhas</span>
+          <span class="tag-pill">Hidratação facial</span>
+          <span class="tag-pill">Massoterapia</span>
         </div>
         <button class="btn btn-outline" id="btnCardEstetica" type="button">Quero agendar</button>
       </div>
@@ -601,6 +612,10 @@
 
     <div id="tabEstetica">
       <div class="avulsos-box" id="avulsosBoxPrecos"></div>
+
+      <div class="subsection-label">Massoterapia</div>
+      <div class="avulsos-box" id="massoterapiaBoxPrecos"></div>
+
       <div class="rituais-row" id="rituaisRowPrecos"></div>
       <div class="tab-cta">
         <button class="btn btn-outline" id="btnEsteticaTabAgendar" type="button">Quero agendar</button>
@@ -710,7 +725,7 @@
 
           <div class="accordion">
             <button type="button" class="accordion-head" id="accHeadRituais">
-              <span class="accordion-label rituais-label" id="rituaisLabelText">Rituais · escolha um</span>
+              <span class="accordion-label rituais-label" id="rituaisLabelText">Pacotes · escolha um</span>
               <span class="count-badge" id="ritualCountBadge" hidden>1</span>
               <span class="chevron" id="chevronRituais">▾</span>
             </button>
@@ -774,14 +789,27 @@
 
   var AVULSOS = [
     { id: "limpeza", nome: "Limpeza de pele profunda", preco: 120 },
-    { id: "sobrancelha", nome: "Design de sobrancelhas", preco: 50 }
+    { id: "sobrancelha", nome: "Design de sobrancelhas", preco: 30 },
+    { id: "hidratacao-facial", nome: "Hidratação facial", preco: 70 }
+  ];
+
+  var MASSOTERAPIA = [
+    { id: "massoterapia-coluna", nome: "Terapêutica da coluna", preco: 100 },
+    { id: "massoterapia-coluna-ventosa", nome: "Terapêutica da coluna + ventosaterapia", preco: 120 },
+    { id: "massagem-relaxante", nome: "Massagem relaxante", preco: 100 },
+    { id: "drenagem-linfatica", nome: "Drenagem linfática", preco: 100 }
   ];
 
   var RITUAIS = [
     {
-      id: "essencial", nome: "Ritual Essencial", preco: 150,
+      id: "essencial", nome: "Ritual Essencial", preco: 130,
       descricao: "Limpeza de pele profunda e design de sobrancelhas em um só atendimento.",
       inclui: ["limpeza", "sobrancelha"]
+    },
+    {
+      id: "pacote-5-limpezas", nome: "Pacote 5 Sessões de Limpeza de Pele", preco: 510,
+      descricao: "5 sessões de limpeza de pele profunda para manter sua pele sempre renovada.",
+      inclui: ["limpeza"]
     }
   ];
 
@@ -801,7 +829,7 @@
   var findInList = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
   var catalogFor = function (tipo) {
     return tipo === "estetica"
-      ? { avulsos: AVULSOS, pacotes: RITUAIS, avulsosLabel: "Serviços avulsos · escolha quantos quiser", pacotesLabel: "Rituais · escolha um" }
+      ? { avulsos: AVULSOS.concat(MASSOTERAPIA), pacotes: RITUAIS, avulsosLabel: "Serviços avulsos · escolha quantos quiser", pacotesLabel: "Pacotes · escolha um" }
       : { avulsos: AUTO_SESSOES, pacotes: AUTO_PERFIS, avulsosLabel: "Sessões · escolha quantas quiser", pacotesLabel: "Perfil de Identidade · escolha um" };
   };
 
@@ -852,10 +880,10 @@
   }
 
   // ---------- Pricing table (#precos) ----------
-  function renderAvulsosPrecos() {
-    var box = document.getElementById("avulsosBoxPrecos");
+  function renderPriceList(elId, items) {
+    var box = document.getElementById(elId);
     box.innerHTML = "";
-    AVULSOS.forEach(function (s) {
+    items.forEach(function (s) {
       var row = document.createElement("div");
       row.className = "price-row";
       row.innerHTML =
@@ -864,6 +892,11 @@
         '<span class="avulso-price">' + fmt(s.preco) + '</span>';
       box.appendChild(row);
     });
+  }
+
+  function renderAvulsosPrecos() {
+    renderPriceList("avulsosBoxPrecos", AVULSOS);
+    renderPriceList("massoterapiaBoxPrecos", MASSOTERAPIA);
   }
 
   function renderRituaisPrecos() {
@@ -1193,7 +1226,7 @@
   trackVisit();
   renderAvulsosPrecos();
   renderRituaisPrecos();
-  renderForm();
+  setTipo("estetica");
 })();
 </script>
 </body>
