@@ -392,9 +392,9 @@
   .field-row { display: flex; gap: 16px; flex-wrap: wrap; }
   .field-row .field { flex: 1 1 200px; }
 
-  .type-pills { display: flex; gap: 10px; }
+  .type-pills { display: flex; gap: 10px; flex-wrap: wrap; }
   .type-pill {
-    flex: 1;
+    flex: 1 1 100px;
     font-family: 'Open Sans', sans-serif;
     font-weight: 600;
     font-size: 14.5px;
@@ -595,6 +595,16 @@
         </div>
         <button class="btn btn-outline" id="btnCardAuto" type="button">Quero agendar</button>
       </div>
+      <div class="service-card">
+        <div class="service-icon sage">⚘</div>
+        <h3>Nutrição</h3>
+        <p>Avaliação e acompanhamento nutricional para cuidar da sua saúde de dentro para fora.</p>
+        <div class="tag-row">
+          <span class="tag-pill">Bioimpedância</span>
+          <span class="tag-pill">Consulta</span>
+        </div>
+        <button class="btn btn-outline" id="btnCardNutricao" type="button">Quero agendar</button>
+      </div>
     </div>
   </div>
 </section>
@@ -608,6 +618,7 @@
     <div class="tabs">
       <button class="tab-btn" id="tabBtnEstetica" type="button" data-active="true">Estética</button>
       <button class="tab-btn" id="tabBtnAuto" type="button" data-active="false">Autoconhecimento</button>
+      <button class="tab-btn" id="tabBtnNutricao" type="button" data-active="false">Nutrição</button>
     </div>
 
     <div id="tabEstetica">
@@ -667,6 +678,13 @@
         <button class="btn btn-outline" id="btnAutoTabAgendar" type="button">Quero agendar</button>
       </div>
     </div>
+
+    <div id="tabNutricao" hidden>
+      <div class="avulsos-box" id="nutricaoBoxPrecos"></div>
+      <div class="tab-cta">
+        <button class="btn btn-outline" id="btnNutricaoTabAgendar" type="button">Quero agendar</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -685,6 +703,7 @@
           <div class="type-pills">
             <button type="button" class="type-pill" id="pillEstetica" data-active="true">Estética</button>
             <button type="button" class="type-pill" id="pillAuto" data-active="false">Autoconhecimento</button>
+            <button type="button" class="type-pill" id="pillNutricao" data-active="false">Nutrição</button>
           </div>
         </div>
 
@@ -723,7 +742,7 @@
             <div class="accordion-panel" id="panelAvulsos"></div>
           </div>
 
-          <div class="accordion">
+          <div class="accordion" id="pacotesAccordion">
             <button type="button" class="accordion-head" id="accHeadRituais">
               <span class="accordion-label rituais-label" id="rituaisLabelText">Pacotes · escolha um</span>
               <span class="count-badge" id="ritualCountBadge" hidden>1</span>
@@ -825,12 +844,21 @@
     { id: "gerencial-com", nome: "Perfil de Identidade Gerencial · com devolutiva", preco: 1199 }
   ];
 
+  var NUTRICAO_AVULSOS = [
+    { id: "bioimpedancia", nome: "Bioimpedância", preco: 100 },
+    { id: "consulta-nutricional", nome: "Consulta", preco: 250 }
+  ];
+
   var fmt = function (n) { return "R$ " + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."); };
   var findInList = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
   var catalogFor = function (tipo) {
-    return tipo === "estetica"
-      ? { avulsos: AVULSOS.concat(MASSOTERAPIA), pacotes: RITUAIS, avulsosLabel: "Serviços avulsos · escolha quantos quiser", pacotesLabel: "Pacotes · escolha um" }
-      : { avulsos: AUTO_SESSOES, pacotes: AUTO_PERFIS, avulsosLabel: "Sessões · escolha quantas quiser", pacotesLabel: "Perfil de Identidade · escolha um" };
+    if (tipo === "estetica") {
+      return { avulsos: AVULSOS.concat(MASSOTERAPIA), pacotes: RITUAIS, avulsosLabel: "Serviços avulsos · escolha quantos quiser", pacotesLabel: "Pacotes · escolha um" };
+    }
+    if (tipo === "nutricao") {
+      return { avulsos: NUTRICAO_AVULSOS, pacotes: [], avulsosLabel: "Serviços · escolha quantos quiser", pacotesLabel: "" };
+    }
+    return { avulsos: AUTO_SESSOES, pacotes: AUTO_PERFIS, avulsosLabel: "Sessões · escolha quantas quiser", pacotesLabel: "Perfil de Identidade · escolha um" };
   };
 
   var state = {
@@ -845,6 +873,7 @@
 
   var WHATSAPP_ESTETICA = "554788377331";
   var WHATSAPP_AUTO = "5547984482893";
+  var WHATSAPP_NUTRICAO = "5547984482893";
 
   // ---------- Supabase ----------
   var sb = null;
@@ -897,6 +926,7 @@
   function renderAvulsosPrecos() {
     renderPriceList("avulsosBoxPrecos", AVULSOS);
     renderPriceList("massoterapiaBoxPrecos", MASSOTERAPIA);
+    renderPriceList("nutricaoBoxPrecos", NUTRICAO_AVULSOS);
   }
 
   function renderRituaisPrecos() {
@@ -920,8 +950,10 @@
     state.pricingTab = tab;
     document.getElementById("tabBtnEstetica").setAttribute("data-active", tab === "estetica" ? "true" : "false");
     document.getElementById("tabBtnAuto").setAttribute("data-active", tab === "auto" ? "true" : "false");
+    document.getElementById("tabBtnNutricao").setAttribute("data-active", tab === "nutricao" ? "true" : "false");
     document.getElementById("tabEstetica").hidden = tab !== "estetica";
     document.getElementById("tabAuto").hidden = tab !== "auto";
+    document.getElementById("tabNutricao").hidden = tab !== "nutricao";
   }
 
   function gotoPrecos() {
@@ -930,6 +962,10 @@
   }
   function gotoAuto() {
     setPricingTab("auto");
+    document.getElementById("precos").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function gotoNutricao() {
+    setPricingTab("nutricao");
     document.getElementById("precos").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -944,9 +980,11 @@
     state.tipoAtendimento = tipo;
     document.getElementById("pillEstetica").setAttribute("data-active", tipo === "estetica" ? "true" : "false");
     document.getElementById("pillAuto").setAttribute("data-active", tipo === "auto" ? "true" : "false");
+    document.getElementById("pillNutricao").setAttribute("data-active", tipo === "nutricao" ? "true" : "false");
     var cat = catalogFor(tipo);
     document.getElementById("avulsosLabelText").textContent = cat.avulsosLabel;
     document.getElementById("rituaisLabelText").textContent = cat.pacotesLabel;
+    document.getElementById("pacotesAccordion").hidden = cat.pacotes.length === 0;
     renderForm();
   }
 
@@ -1061,7 +1099,7 @@
       "Valor: " + fmt(b.total) + "\n" +
       "Nome: " + b.name + "\n" +
       "Telefone: " + b.phone;
-    var number = b.tipo === "estetica" ? WHATSAPP_ESTETICA : WHATSAPP_AUTO;
+    var number = b.tipo === "estetica" ? WHATSAPP_ESTETICA : (b.tipo === "nutricao" ? WHATSAPP_NUTRICAO : WHATSAPP_AUTO);
     return "https://wa.me/" + number + "?text=" + encodeURIComponent(txt);
   }
 
@@ -1198,10 +1236,12 @@
 
   document.getElementById("tabBtnEstetica").addEventListener("click", function () { setPricingTab("estetica"); });
   document.getElementById("tabBtnAuto").addEventListener("click", function () { setPricingTab("auto"); });
+  document.getElementById("tabBtnNutricao").addEventListener("click", function () { setPricingTab("nutricao"); });
 
   document.getElementById("btnHeroAgendar").addEventListener("click", gotoPrecos);
   document.getElementById("btnCardEstetica").addEventListener("click", gotoPrecos);
   document.getElementById("btnCardAuto").addEventListener("click", gotoAuto);
+  document.getElementById("btnCardNutricao").addEventListener("click", gotoNutricao);
   document.getElementById("btnEsteticaTabAgendar").addEventListener("click", function () {
     setTipo("estetica");
     document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1210,9 +1250,14 @@
     setTipo("auto");
     document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
   });
+  document.getElementById("btnNutricaoTabAgendar").addEventListener("click", function () {
+    setTipo("nutricao");
+    document.getElementById("agendamento").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
   document.getElementById("pillEstetica").addEventListener("click", function () { setTipo("estetica"); });
   document.getElementById("pillAuto").addEventListener("click", function () { setTipo("auto"); });
+  document.getElementById("pillNutricao").addEventListener("click", function () { setTipo("nutricao"); });
 
   document.getElementById("accHeadAvulsos").addEventListener("click", function () { toggleAccordion("avulsos"); });
   document.getElementById("accHeadRituais").addEventListener("click", function () { toggleAccordion("rituais"); });

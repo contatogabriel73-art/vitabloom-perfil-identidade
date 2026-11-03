@@ -22,7 +22,7 @@ create table if not exists public.visits (
 create table if not exists public.bookings (
   id             uuid primary key default gen_random_uuid(),
   created_at     timestamptz not null default now(),
-  tipo           text not null check (tipo in ('estetica', 'auto')),
+  tipo           text not null check (tipo in ('estetica', 'auto', 'nutricao')),
   "date"         date not null,
   "time"         text not null check (char_length("time") <= 10),
   avulsos        text[] not null default '{}' check (coalesce(array_length(avulsos, 1), 0) <= 20),
@@ -39,6 +39,11 @@ create table if not exists public.bookings (
   paid_at        timestamptz,
   notes          text check (char_length(notes) <= 2000)
 );
+
+-- Se a tabela já existia (sem a opção "nutricao"), atualiza a trava.
+alter table public.bookings drop constraint if exists bookings_tipo_check;
+alter table public.bookings add constraint bookings_tipo_check
+  check (tipo in ('estetica', 'auto', 'nutricao'));
 
 create index if not exists bookings_created_at_idx on public.bookings (created_at desc);
 create index if not exists visits_created_at_idx   on public.visits (created_at desc);

@@ -173,6 +173,7 @@
   .badge { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
   .badge.estetica { background: rgba(232,180,184,.25); color: var(--rose-dark); }
   .badge.auto { background: rgba(168,181,160,.28); color: var(--sage-dark); }
+  .badge.nutricao { background: rgba(200,164,108,.28); color: #8a6a2e; }
   .badge.paid { background: var(--sage-dark); color: #fff; }
   .badge.unpaid { background: rgba(232,180,184,.25); color: var(--rose-dark); }
   .bk-created { font-size: 12.5px; color: var(--text-3); margin-left: auto; }
@@ -319,6 +320,9 @@
   function money(n) {
     return Number(n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
+  var TIPO_LABELS = { estetica: "Estética", auto: "Autoconhecimento", nutricao: "Nutrição" };
+  function tipoLabel(tipo) { return TIPO_LABELS[tipo] || tipo; }
+  function tipoBadgeClass(tipo) { return TIPO_LABELS[tipo] ? tipo : "auto"; }
   function pct(a, b) { return b > 0 ? (a / b * 100).toFixed(1).replace(".", ",") + "%" : "-"; }
 
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -574,7 +578,7 @@
         : '<span class="badge unpaid">Não pago</span>';
       return '<article class="bk" data-id="' + esc(b.id) + '">' +
         '<div class="bk-top">' +
-          '<span class="badge ' + (b.tipo === "estetica" ? "estetica" : "auto") + '">' + (b.tipo === "estetica" ? "Estética" : "Autoconhecimento") + "</span>" +
+          '<span class="badge ' + tipoBadgeClass(b.tipo) + '">' + esc(tipoLabel(b.tipo)) + "</span>" +
           '<span class="bk-name">' + esc(b.name) + "</span>" + paidInfo +
           '<span class="bk-created">Recebido em ' + esc(brDateTime(b.created_at)) + "</span>" +
         "</div>" +
@@ -756,7 +760,7 @@
     var lines = [head.map(csvCell).join(";")];
     rows.forEach(function (b) {
       lines.push([
-        brDateTime(b.created_at), b.tipo === "estetica" ? "Estética" : "Autoconhecimento", brDate(b.date), b.time,
+        brDateTime(b.created_at), tipoLabel(b.tipo), brDate(b.date), b.time,
         b.services_label, String(Number(b.total || 0)).replace(".", ","), b.name, b.phone, b.email,
         b.status, b.paid ? "Sim" : "Não",
         b.paid_amount === null || b.paid_amount === undefined ? "" : String(Number(b.paid_amount)).replace(".", ","),
